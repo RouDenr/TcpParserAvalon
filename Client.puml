@@ -1,0 +1,24 @@
+﻿@startuml
+!define INTERFACE interface
+
+INTERFACE IConnection {
+  + connect()
+  + disconnect()
+  + sendData(data: String)
+  + receiveData(): String
+}
+
+INTERFACE IDisplay {
+  + displayData(data: String)
+}
+
+CLASS Client {
+  - connection: IConnection
+  - display: IDisplay
+
+  + main()
+  + requestAndDisplayData()
+}
+Client --|> IConnection
+Client --|> IDisplay
+@enduml

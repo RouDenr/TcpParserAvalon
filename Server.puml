@@ -1,0 +1,35 @@
+﻿@startuml
+!define INTERFACE interface
+
+INTERFACE IServer {
+  + startServer()
+  + acceptClient(): IClientHandler
+}
+
+INTERFACE IClientHandler {
+  + handleClient(clientData: String): String
+}
+
+INTERFACE IDataProcessor {
+  + parseXML(xmlData: String): ParsedData
+}
+
+INTERFACE IParsedData {
+  + getFrom()
+  + getText()
+  + getColor()
+  + getImage()
+}
+
+CLASS Server {
+  - server: IServer
+  - dataProcessor: IDataProcessor
+
+  + main()
+  + startListening()
+}
+Server --|> IServer
+Server --|> IDataProcessor
+Server --|> IClientHandler
+IClientHandler --> IParsedData
+@enduml
