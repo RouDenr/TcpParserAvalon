@@ -4,12 +4,11 @@ using ServerModel.XmlParser;
 namespace ServerModel.ConsoleImplement;
 
 
-class ConsoleCommands
+public class ConsoleCommands
 {
 	private readonly IServer _server;
-	private Dictionary<string, ConsoleCommandDelegate> _commands = new();
-	
-	ConsoleCommands(IServer server)
+	private readonly Dictionary<string, ConsoleCommandDelegate> _commands = new();
+	public ConsoleCommands(IServer server)
 	{
 		_server = server;
 		TypeInfo typeInfo = typeof(ConsoleCommands).GetTypeInfo();
@@ -24,19 +23,19 @@ class ConsoleCommands
 	}
 	
 	[ConsoleCommand("start", "Starts the server")]
-	public void StartServer()
+	public void StartServer(object[] args)
 	{
 		_server.Start();
 	}
 	
 	[ConsoleCommand("stop", "Stops the server")]
-	public void StopServer()
+	public void StopServer(object[] args)
 	{
 		_server.Stop();
 	}
 
 	[ConsoleCommand("clients", "Shows all connected clients")]
-	public void ShowClients()
+	public void ShowClients(object[] args)
 	{
 		foreach (IClient client in _server.Clients)
 		{
@@ -45,8 +44,15 @@ class ConsoleCommands
 	}
 	
 	[ConsoleCommand("client", "Shows a specific client", "id")]
-	public void ShowClient(string id)
+	public void ShowClient(object[] args)
 	{
+		var id = args[0].ToString();
+		if (string.IsNullOrWhiteSpace(id))
+		{
+			Console.WriteLine("Invalid id");
+			return;
+		}
+		
 		if (!int.TryParse(id, out var clientId))
 		{
 			Console.WriteLine("Invalid id");
@@ -64,7 +70,7 @@ class ConsoleCommands
 	}
 	
 	[ConsoleCommand("help", "Shows this help")]
-	public void Help()
+	public void Help(object[] args)
 	{
 		foreach (KeyValuePair<string, ConsoleCommandDelegate> command in _commands)
 		{
@@ -77,5 +83,35 @@ class ConsoleCommands
 			Console.WriteLine($"Usage: {attribute.Name} {string.Join(" ", attribute.Args)}");
 		}
 	}
-	
+
+	public void HandleCommand(string command)
+	{
+		if (string.IsNullOrWhiteSpace(command)) return;
+		
+		// Split the command into the command name and the arguments
+		var parts = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		if (parts.Length == 0) return;
+		
+		// Get the command name
+		var commandName = parts[0];
+		if (!_commands.ContainsKey(commandName))
+		{
+			Console.WriteLine("Unknown command");
+			return;
+		}
+		
+		// Get the command delegate
+		var commandDelegate = _commands[commandName];
+		ConsoleCommandAttribute? attribute = commandDelegate.Method.GetCustomAttribute<ConsoleCommandAttribute>();
+		if (attribute == null) return;
+		
+		if (parts.Length - 1 != attribute.Args.Length)
+		{
+			Console.WriteLine("Invalid arguments");
+			return;
+		}
+		
+		// Invoke the command delegate
+		commandDelegate(parts.Skip(1).Select(x => (object)x).ToArray());
+	}
 }
