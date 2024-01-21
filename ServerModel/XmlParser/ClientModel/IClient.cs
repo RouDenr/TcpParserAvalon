@@ -1,4 +1,4 @@
-﻿namespace ServerModel.XmlParser;
+﻿namespace ServerModel.XmlParser.ClientModel;
 
 public interface IClient
 {
