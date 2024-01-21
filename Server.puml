@@ -1,35 +1,76 @@
 ﻿@startuml
 !define INTERFACE interface
 
-INTERFACE IServer {
-  + startServer()
-  + acceptClient(): IClientHandler
-}
+card card [
+    1. Поключение к клиенту (IClientHandler)
+    2. Выбор xml файла (IDataProcessor)
+    3. Парсинг xml файла (IParser)
+    4. Отправка данных клиенту (IResponseSender)
+    
+    Server > IClientHandler > IDataProcessor > IParser > IParsedData > IResponseSender 
+]
 
+INTERFACE IServer{
+    + Run()
+    + Stop()
+    }
+    
 INTERFACE IClientHandler {
-  + handleClient(clientData: String): String
+  + Handle()
+  + GetClients()
+  + GetClient(ip?)
+  --
+  Отвечает за подключение к клиенту,
+  хранение клиентов 
+    
+}
+  
+INTERFACE IDataProcessor {
+  + Process()
+  --
+  Отвечает за выбор xml файла
+  (зависит от интерфейса взаимодействия)
 }
 
-INTERFACE IDataProcessor {
-  + parseXML(xmlData: String): ParsedData
+INTERFACE IParser {
+  + Parse()
+  --
+  Отвечает за парсинг xml файла
 }
 
 INTERFACE IParsedData {
-  + getFrom()
-  + getText()
-  + getColor()
-  + getImage()
+  + GetFrom()
+  + GetText()
+  + GetColor()
+  + GetImage()
+}
+
+INTERFACE IResponseSender {
+  + Send(data : IParsedData)
 }
 
 CLASS Server {
-  - server: IServer
-  - dataProcessor: IDataProcessor
-
-  + main()
-  + startListening()
+    + Run()
+    + Stop()
+  
+  --
+  Агригирует все интерфейсы для работы
+  с клиентом, обработки и отправки данных
+  
 }
-Server --|> IServer
-Server --|> IDataProcessor
-Server --|> IClientHandler
-IClientHandler --> IParsedData
+
+IServer <|.. Server
+Server o-- IClientHandler
+Server o-- IDataProcessor
+Server o-- IParser
+
+IParser *-- IParsedData
+
+IDataProcessor -right-> IParser
+IParser -right-> IResponseSender
+
+
+IResponseSender <.. IClientHandler : "Тип подключения (вашем случае TCP)"
+ 
+
 @enduml
