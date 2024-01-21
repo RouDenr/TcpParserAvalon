@@ -1,6 +1,8 @@
 using Moq;
 using ServerModel.ConsoleImplement;
 using ServerModel.XmlParser;
+using ServerModel.XmlParser.ClientModel;
+using ServerModel.XmlParser.Server;
 
 namespace TestProject;
 

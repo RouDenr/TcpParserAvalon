@@ -1,4 +1,6 @@
-﻿namespace ServerModel.XmlParser;
+﻿using ServerModel.XmlParser.ClientModel;
+
+namespace ServerModel.XmlParser.Server;
 
 public interface IServer
 {
@@ -13,6 +15,4 @@ public interface IServer
 	
 	IClientHandler ClientHandler { get; }
 	IDataProcessor DataProcessor { get; }
-	IParser Parser { get; }
-	IResponseHandler ResponseHandler { get; }
 }

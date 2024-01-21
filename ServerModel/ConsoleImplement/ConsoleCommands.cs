@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using ServerModel.XmlParser;
+using ServerModel.XmlParser.ClientModel;
+using ServerModel.XmlParser.Server;
 
 namespace ServerModel.ConsoleImplement;
 
