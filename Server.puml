@@ -64,13 +64,11 @@ Server o-- IClientHandler
 Server o-- IDataProcessor
 Server o-- IParser
 
-IParser *-- IParsedData
+IClientHandler *-- IResponseSender : "Тип подключения (вашем случае TCP)"
+IParser *-- IParsedData 
 
 IDataProcessor -right-> IParser
-IParser -right-> IResponseSender
-
-
-IResponseSender <.. IClientHandler : "Тип подключения (вашем случае TCP)"
+IParser -right-> IClientHandler
  
 
 @enduml
