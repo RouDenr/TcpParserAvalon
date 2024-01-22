@@ -11,7 +11,7 @@ public class XmlParserServer(IClientHandler clientHandler, IDataProcessor dataPr
 	
 	public override void Start()
 	{
-		throw new NotImplementedException();
+		base.Start();
 	}
 
 	public override void Stop()
