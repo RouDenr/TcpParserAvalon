@@ -1,4 +1,5 @@
-﻿using ServerModel.XmlParser.ClientModel;
+﻿using System.Net;
+using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.Server;
@@ -6,7 +7,7 @@ namespace ServerModel.XmlParser.Server;
 public interface IServer
 {
 	int Port { get; }
-	int Ip { get; }
+	IPAddress Ip { get; }
 	bool IsRunning { get; protected set; }
 	
 	

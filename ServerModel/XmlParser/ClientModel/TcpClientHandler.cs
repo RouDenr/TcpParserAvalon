@@ -7,19 +7,21 @@ public class TcpClientHandler
 	: IClientHandler
 {
 	public int Port { get; }
-	public int Ip { get; }
+	public IPAddress Ip { get; }
 	public IEnumerable<IClient> Clients { get; set; }
 	
 	public IResponseHandler ResponseHandler { get; }
 
 	public TcpListener Listener { get; }
 	
-	public TcpClientHandler(int port, int ip)
+	public TcpClientHandler(int port, int ip = 0)
 	{
 		Port = port;
-		Ip = ip;
-		
-		Listener = new TcpListener(new IPAddress(Ip), Port);
+		Ip = new IPAddress(ip);
+
+		if (ip == 0)
+			Ip = IPAddress.Loopback;
+		Listener = new TcpListener(Ip, Port);
 		if (Listener == null)
 			throw new Exception("Failed to create TcpListener");
 		

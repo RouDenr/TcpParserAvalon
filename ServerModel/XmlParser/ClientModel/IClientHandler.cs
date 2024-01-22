@@ -1,9 +1,11 @@
-﻿namespace ServerModel.XmlParser.ClientModel;
+﻿using System.Net;
+
+namespace ServerModel.XmlParser.ClientModel;
 
 public interface IClientHandler
 {
 	int Port { get; }
-	int Ip { get; }
+	IPAddress Ip { get; }
 	IEnumerable<IClient> Clients { get; set; }
 	
 	IResponseHandler ResponseHandler { get; }
