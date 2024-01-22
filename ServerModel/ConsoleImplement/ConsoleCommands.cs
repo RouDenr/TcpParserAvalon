@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Drawing;
+using System.Reflection;
 using System.Text;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
@@ -88,8 +89,16 @@ public class ConsoleCommands
 			return;
 		}
 		
-		_xmlParserServer.ParseFile(file);
+		XmlData data = _xmlParserServer.ParseFile(file) as XmlData 
+		               ?? throw new Exception("Invalid data");
 		
+		StringBuilder builder = new();
+		builder.AppendLine($"Path: {data.Path}");
+		builder.AppendLine($"From: {data.From}");
+		builder.AppendLine($"To: {data.To}");
+		builder.AppendLine($"Text: {data.Text}");
+		builder.AppendLine($"Color: {Color.FromArgb(data.Color)}");
+		Console.WriteLine(builder.ToString());
 	}
 	
 	[ConsoleCommand("clients", "Shows all connected clients")]

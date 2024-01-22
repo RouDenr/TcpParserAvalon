@@ -24,8 +24,8 @@ public class XmlParserServer(IClientHandler clientHandler, IDataProcessor dataPr
 		throw new NotImplementedException();
 	}
 
-	public void ParseFile(FileInfo file)
+	public IData ParseFile(FileInfo file)
 	{
-		Parser.Parse(file.FullName);
+		return Parser.Parse(file.FullName);
 	}
 }
