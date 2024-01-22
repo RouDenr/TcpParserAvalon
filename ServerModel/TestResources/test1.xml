@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<message>
+    <formatVersion>1.0</formatVersion>
+    <from>Server</from>
+    <to>Client</to>
+    <id>123</id>
+    <color>#FF0000</color> <!-- red --> 
+    <text>Hello, Client!</text>
+    <image>base64encodedimage</image>
+</message>
