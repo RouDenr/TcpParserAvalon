@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
-using ServerModel.XmlParser;
+using System.Text;
 using ServerModel.XmlParser.ClientModel;
+using ServerModel.XmlParser.Data;
 using ServerModel.XmlParser.Server;
 
 namespace ServerModel.ConsoleImplement;
@@ -36,6 +37,48 @@ public class ConsoleCommands
 		_server.Stop();
 	}
 
+	[ConsoleCommand("status", "Shows the server status")]
+	public void ServerStatus(object[] args)
+	{
+		StringBuilder builder = new();
+		builder.AppendLine($"Server status: {_server.IsRunning}");
+		builder.AppendLine($"Ip: {_server.Ip}");
+		builder.AppendLine($"Port: {_server.Port}");
+		builder.AppendLine($"Clients: {_server.Clients.Count()}");
+		
+		Console.WriteLine(builder.ToString());
+	}
+	
+	[ConsoleCommand("data", "Shows the data")]
+	public void ShowData(object[] args)
+	{
+		var builder = new StringBuilder();
+		int id = 0;
+		foreach (var data  in _server.DataProcessor.ProcessData)
+		{
+			if (data is PathData path)
+			{
+				// parse only name of file
+				var name = path.Path.Split('\\').Last();
+				builder.AppendLine($"{id++}: {name}");
+			}
+		}
+		
+		Console.WriteLine(builder.ToString());
+	}
+	
+	[ConsoleCommand("parse", "Parses a file", "path")]
+	public void ParseFile(object[] args)
+	{
+		var path = args[0].ToString();
+		if (string.IsNullOrWhiteSpace(path))
+		{
+			Console.WriteLine("Invalid path");
+			return;
+		}
+		
+	}
+	
 	[ConsoleCommand("clients", "Shows all connected clients")]
 	public void ShowClients(object[] args)
 	{
@@ -86,7 +129,7 @@ public class ConsoleCommands
 		}
 	}
 
-	public void HandleCommand(string command)
+	public void HandleCommand(string? command)
 	{
 		if (string.IsNullOrWhiteSpace(command)) return;
 		
@@ -115,5 +158,11 @@ public class ConsoleCommands
 		
 		// Invoke the command delegate
 		commandDelegate(parts.Skip(1).Select(x => (object)x).ToArray());
+	}
+	
+	[ConsoleCommand("exit", "Exits the program")]
+	public void Exit(object[] args)
+	{
+		Environment.Exit(0);
 	}
 }
