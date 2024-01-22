@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Net;
 using ServerModel.ConsoleImplement;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
@@ -9,16 +8,15 @@ using ServerModel.XmlParser.Server;
 
 Console.WriteLine("Hello, World!");
 
-IDataFactory dataFactory = new XmlDataFactory();
+XmlDataFactory dataFactory = new XmlDataFactory();
 IClientHandler clientHandler = new TcpClientHandler(port: 8888);
-IServer server = new XmlParserServer(clientHandler, dataFactory.CreateDataProcessor(), dataFactory.CreateParser());
+XmlParserServer server = new XmlParserServer(clientHandler, dataFactory.CreateDataProcessor(), dataFactory.CreateParser());
 
-server.Start();
+Task serverTask = server.Start();
 
 ConsoleCommands commands = new(server);
 
-var isRunning = true;
-while (isRunning)
+while (true)
 {
 	try
 	{
@@ -29,7 +27,7 @@ while (isRunning)
 	}
 	catch (Exception e)
 	{
-		Console.WriteLine($"Error: {e.Message}");
+		Console.WriteLine($"Error: {e}");
 	}
 }
 

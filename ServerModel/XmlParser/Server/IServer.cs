@@ -11,7 +11,7 @@ public interface IServer
 	bool IsRunning { get; protected set; }
 	
 	
-	void Start();
+	Task Start();
 	void Stop();
 	IEnumerable<IClient> Clients { get; }
 	

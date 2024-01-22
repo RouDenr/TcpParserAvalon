@@ -1,9 +1,12 @@
-﻿using System.Xml.Linq;
+﻿using System.Drawing;
+using System.Xml.Linq;
 
 namespace ServerModel.XmlParser.Data;
 
 public class XmlParser : IParser
 {
+	private static readonly string[] AllowedImageExtensions = ["bmp"];
+
 	private XElement? _root;
 	private XElement Root
 	{
@@ -25,10 +28,7 @@ public class XmlParser : IParser
 
 		_root = doc.Root ?? throw new NotParsedException("Root element is null");
 		var element = Root.Element("imp_path");
-		if (element != null)
-		{
-			AddXmlImgBmp(path, element.Value);
-		}
+		
 		XmlData data = new (
 			path: path,
 			from: GetString("from"),
@@ -41,35 +41,7 @@ public class XmlParser : IParser
 
 		return data;
 	}
-
-	/// <summary>
-	/// Add image to xml file
-	/// </summary>
-	/// <param name="path"></param>
-	/// <param name="elementValue"></param>
-	/// <exception cref="NotParsedException"></exception>
-	private void AddXmlImgBmp(string path, string elementValue)
-	{
-		if (!elementValue.EndsWith(".bmp"))
-		{
-			throw new NotParsedException($"Image {elementValue} is not bmp");
-		}
-		
-		var imgPath = Path.Combine(Path.GetDirectoryName(path) ?? throw new NotParsedException("Path is null"), elementValue);
-		
-		if (!File.Exists(imgPath))
-		{
-			throw new NotParsedException($"Image {imgPath} not found");
-		}
-		byte[] img = File.ReadAllBytes(imgPath);
-		
-		if (Root.Element("image") != null)
-		{
-			Root.Element("image")?.Remove();
-		}
-		Root.Add(new XElement("image", Convert.ToBase64String(img)));
-	}
-
+	
 	private string GetString(string name)
 	{
 		var element = Root.Element(name);
@@ -89,7 +61,25 @@ public class XmlParser : IParser
 		{
 			throw new NotParsedException($"{name} element is null");
 		}
-		return int.Parse(element.Value);
+		return ParseColor(element.Value).ToArgb();
+	}
+
+	public static Color ParseColor(string input)
+	{
+		// #FF00FF format
+		if (input.StartsWith($"#"))
+		{
+			return ColorTranslator.FromHtml(input);
+		}
+		
+		// 255, 0, 255 format
+		string[] rgb = input.Split(',');
+		
+		if (rgb.Length != 3)
+		{
+			throw new NotParsedException($"Invalid color format {input}");
+		}
+		return Color.FromArgb(int.Parse(rgb[0]), int.Parse(rgb[1]), int.Parse(rgb[2]));
 	}
 	
 	private byte[] GetImage(string name)
@@ -100,6 +90,22 @@ public class XmlParser : IParser
 		{
 			throw new NotParsedException($"{name} element is null");
 		}
+		
+		// check attribute mime to image/{allowed extensions}
+		var mime = element.Attribute("mime")?.Value;
+		if (mime == null)
+		{
+			throw new NotParsedException($"{name} element has no mime attribute: {element.Value}");
+		}
+		if (!mime.StartsWith("image/"))
+		{
+			throw new NotParsedException($"{name} element has invalid mime attribute: {mime}");
+		}
+		if (!AllowedImageExtensions.Contains(mime["image/".Length..]))
+		{
+			throw new NotParsedException($"{name} element has invalid mime attribute: {mime}");
+		}
+		
 
 		return Convert.FromBase64String(element.Value);
 	}

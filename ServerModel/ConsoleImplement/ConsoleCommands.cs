@@ -10,10 +10,14 @@ namespace ServerModel.ConsoleImplement;
 public class ConsoleCommands
 {
 	private readonly IServer _server;
+	private readonly XmlParserServer _xmlParserServer;
 	private readonly Dictionary<string, ConsoleCommandDelegate> _commands = new();
 	public ConsoleCommands(IServer server)
 	{
 		_server = server;
+		_xmlParserServer = (XmlParserServer) server;
+		if (_server == null) throw new ArgumentNullException(nameof(server));
+		
 		TypeInfo typeInfo = typeof(ConsoleCommands).GetTypeInfo();
 		foreach (MethodInfo method in typeInfo.DeclaredMethods)
 		{
@@ -76,6 +80,15 @@ public class ConsoleCommands
 			Console.WriteLine("Invalid path");
 			return;
 		}
+		
+		var file = new FileInfo(path);
+		if (!file.Exists)
+		{
+			Console.WriteLine("File not found");
+			return;
+		}
+		
+		_xmlParserServer.ParseFile(file);
 		
 	}
 	

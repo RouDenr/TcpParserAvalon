@@ -15,9 +15,12 @@ public abstract class AServer(IClientHandler clientHandler, IDataProcessor dataP
 	public bool IsRunning { get; set; }
 	public IEnumerable<IClient> Clients => ClientHandler.Clients;
 
-	public virtual void Start()
+	public virtual Task Start()
 	{
 		DataProcessor.Init();
+		
+		
+		return Task.CompletedTask;
 	}
 
 	public abstract void Stop();

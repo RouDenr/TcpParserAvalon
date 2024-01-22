@@ -9,13 +9,23 @@ public class XmlParserServer(IClientHandler clientHandler, IDataProcessor dataPr
 	IParser Parser { get; } = parser;
 	
 	
-	public override void Start()
+	public override Task Start()
 	{
-		base.Start();
+		Task task = base.Start();
+		if (!task.IsCompletedSuccessfully) return task;
+		
+		
+		
+		return task;
 	}
 
 	public override void Stop()
 	{
 		throw new NotImplementedException();
+	}
+
+	public void ParseFile(FileInfo file)
+	{
+		Parser.Parse(file.FullName);
 	}
 }
