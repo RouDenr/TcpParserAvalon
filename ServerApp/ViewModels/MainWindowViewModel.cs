@@ -14,13 +14,14 @@ public class MainWindowViewModel : ViewModelBase
 {
     private XmlData _dataInfo;
     private Bitmap _image;
-    private object _log = new object();
+    private object _log = new();
 
     public MainWindowViewModel()
     {
         SelectFileCommand = ReactiveCommand.CreateFromTask(SelectFile);
     }
     
+    // TODO: change obsolete method
     [Obsolete("Obsolete")]
     private async Task SelectFile()
     {
