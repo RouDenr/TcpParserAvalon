@@ -21,15 +21,7 @@
     <TabControl>
         <!-- main window (space for picture in the centre left, file selection button on the right, space for log at the bottom) -->
         <TabItem Header="Main">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
 
                 <!-- image () -->
                 <Image Grid.Column="0" Grid.Row="0"
@@ -112,7 +104,8 @@
                 <TextBox 
                     Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
                     Text="{Binding Log}" 
-                    IsReadOnly="True" />
+                    IsReadOnly="True" 
+                    />
             </Grid>
             
         </TabItem>
