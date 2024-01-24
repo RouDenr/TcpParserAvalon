@@ -1,9 +1,5 @@
 ﻿using System.Reactive;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
-using ClientApp.Views;
 using ReactiveUI;
 
 namespace ClientApp.ViewModels;
@@ -49,7 +45,6 @@ public class LoginViewModel : PageViewModelBase
             ConnectionStatus = "Connected";
             ConnectionStatusColor = new SolidColorBrush(Colors.Green);
             CanNavigateNext = true;
-            
         }
         else
         {
@@ -60,5 +55,5 @@ public class LoginViewModel : PageViewModelBase
 
 
     public override bool CanNavigateNext { get; protected set; }
-    public override bool CanNavigatePrevious { get; protected set; }
+    public override bool CanNavigatePrevious { get; protected set; } = false;
 }

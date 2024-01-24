@@ -6,6 +6,7 @@ public partial class ClientView : UserControl
 {
 	public ClientView()
 	{
+		InitializeComponent();
 	}
 	
 }
