@@ -26,8 +26,8 @@
 
 
   <ItemGroup>
-    <Compile Update="Views\ClientPage.cs">
-      <DependentUpon>ClientPage.axaml</DependentUpon>
+    <Compile Update="Views\ClientView.cs">
+      <DependentUpon>ClientView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\LoginView.axaml.cs">
       <DependentUpon>LoginPage.axaml</DependentUpon>

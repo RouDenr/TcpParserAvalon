@@ -2,9 +2,9 @@
 
 namespace ClientApp.Views;
 
-public partial class ClientPage : UserControl
+public partial class ClientView : UserControl
 {
-	public ClientPage()
+	public ClientView()
 	{
 	}
 	
