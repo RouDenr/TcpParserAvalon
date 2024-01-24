@@ -21,7 +21,7 @@ public class ServerInstance
 	private ServerInstance()
 	{
 		XmlDataFactory factory = new ();
-		Clients = new TcpClientHandler(port: 8888);
+		Clients = new TcpClientHandler();
 		Server = new XmlParserServer(Clients, factory.CreateDataProcessor(), factory.CreateParser());
 	}
 

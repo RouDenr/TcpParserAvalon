@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser.ClientModel;
 
@@ -8,29 +9,53 @@ public class TcpClientHandler
 {
 	public int Port { get; }
 	public IPAddress Ip { get; }
-	public IEnumerable<IClient> Clients { get; set; }
+	public IEnumerable<IDisposable> Clients { get; set; }
+	private List<TcpClient> ClientsList { get; }
 	
 	public IResponseHandler ResponseHandler { get; }
+	public bool IsRunning => Listener.Server.IsBound;
 
-	public TcpListener Listener { get; }
+	private TcpListener Listener { get; }
 	
-	public TcpClientHandler(int port, int ip = 0)
+	public TcpClientHandler()
 	{
-		Port = port;
-		Ip = new IPAddress(ip);
-
-		if (ip == 0)
-			Ip = IPAddress.Loopback;
+		Port = ConnectionData.Port;
+		Ip = ConnectionData.Ip; 
+			
 		Listener = new TcpListener(Ip, Port);
 		if (Listener == null)
 			throw new Exception("Failed to create TcpListener");
 		
-		Clients = new List<IClient>();
+		Clients = new List<TcpClient>();
+		ClientsList = Clients as List<TcpClient> ?? throw new Exception("Failed to cast Clients to List<IClient>");
 		ResponseHandler = new TcpResponseHandler();
 	}
 
-	public string HandleClient(string request)
+	public async Task HandleClients()
 	{
-		throw new NotImplementedException();
+		// start listening for client connection
+		Listener.Start();
+
+		if (!Listener.Server.IsBound)
+			throw new Exception("Failed to start listening for client connection");
+		Console.WriteLine($"Listening for client connection on {Ip}:{Port}");
+		
+		while (Listener.Pending())
+		{
+			// wait for client to connect
+			var client = await Listener.AcceptTcpClientAsync() ?? throw new Exception("Failed to accept client");
+			ClientsList.Add(client);
+		}
+	}
+
+	public void StopHandle()
+	{
+		foreach (var client in Clients)
+		{
+			client.Dispose();
+		}
+		
+		Listener.Stop();
+		ClientsList.Clear();
 	}
 }

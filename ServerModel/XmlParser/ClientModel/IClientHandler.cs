@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Sockets;
 
 namespace ServerModel.XmlParser.ClientModel;
 
@@ -6,10 +7,12 @@ public interface IClientHandler
 {
 	int Port { get; }
 	IPAddress Ip { get; }
-	IEnumerable<IClient> Clients { get; set; }
+	IEnumerable<IDisposable> Clients { get; set; }
 	
 	IResponseHandler ResponseHandler { get; }
-	
-	string HandleClient(String request);
-	
+	bool IsRunning { get;  }
+
+	Task HandleClients();
+
+	void StopHandle();
 }
