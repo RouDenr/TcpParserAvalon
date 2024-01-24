@@ -34,8 +34,8 @@ namespace ClientApp.ViewModels
         /// </summary>
         public PageViewModelBase CurrentPage
         {
-            get { return _currentPage; }
-            private set { this.RaiseAndSetIfChanged(ref _currentPage, value); }
+            get => _currentPage;
+            private set => this.RaiseAndSetIfChanged(ref _currentPage, value);
         }
 
         /// <summary>
