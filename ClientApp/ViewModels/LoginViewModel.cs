@@ -1,5 +1,7 @@
 ﻿using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Media;
+using ClientApp.Models;
 using ReactiveUI;
 
 namespace ClientApp.ViewModels;
@@ -39,8 +41,12 @@ public class LoginViewModel : PageViewModelBase
     private void Connect()
     {
         bool isUsernameValid = !string.IsNullOrWhiteSpace(Username);
-		
-        if (isUsernameValid)
+        
+        Task connect = ClientHandler.Instance.Connect();
+        connect.Wait();
+        
+        
+        if (isUsernameValid && ClientHandler.Instance.IsConnected)
         {
             ConnectionStatus = "Connected";
             ConnectionStatusColor = new SolidColorBrush(Colors.Green);

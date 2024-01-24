@@ -2,4 +2,5 @@
 
 public interface IResponseHandler
 {
+	string HandleResponse(string dataReceived);
 }
