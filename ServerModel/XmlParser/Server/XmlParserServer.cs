@@ -8,16 +8,6 @@ public class XmlParserServer(IClientHandler clientHandler, IDataProcessor dataPr
 {
 	IParser Parser { get; } = parser;
 	
-	
-	public override Task Start()
-	{
-		Task task = base.Start();
-		if (!task.IsCompletedSuccessfully) return task;
-		
-		
-		
-		return task;
-	}
 
 	public override void Stop()
 	{

@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
@@ -33,5 +32,10 @@
       <DependentUpon>LoginPage.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServerModel\ServerModel.csproj" />
   </ItemGroup>
 </Project>

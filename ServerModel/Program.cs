@@ -8,10 +8,11 @@ using ServerModel.XmlParser.Server;
 
 Console.WriteLine("Hello, World!");
 
-XmlDataFactory dataFactory = new XmlDataFactory();
-IClientHandler clientHandler = new TcpClientHandler(port: 8888);
-XmlParserServer server = new XmlParserServer(clientHandler, dataFactory.CreateDataProcessor(), dataFactory.CreateParser());
+XmlDataFactory dataFactory = new();
+IClientHandler clientHandler = new TcpClientHandler();
+XmlParserServer server = new(clientHandler, dataFactory.CreateDataProcessor(), dataFactory.CreateParser());
 
+// Start server
 Task serverTask = server.Start();
 
 ConsoleCommands commands = new(server);

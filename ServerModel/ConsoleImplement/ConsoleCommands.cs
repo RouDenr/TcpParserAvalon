@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
-using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 using ServerModel.XmlParser.Server;
 
@@ -11,12 +11,12 @@ namespace ServerModel.ConsoleImplement;
 public class ConsoleCommands
 {
 	private readonly IServer _server;
-	private readonly XmlParserServer _xmlParserServer;
+	private readonly XmlParserServer? _xmlParserServer;
 	private readonly Dictionary<string, ConsoleCommandDelegate> _commands = new();
 	public ConsoleCommands(IServer server)
 	{
 		_server = server;
-		_xmlParserServer = (XmlParserServer) server;
+		_xmlParserServer = server as XmlParserServer;
 		if (_server == null) throw new ArgumentNullException(nameof(server));
 		
 		TypeInfo typeInfo = typeof(ConsoleCommands).GetTypeInfo();
@@ -75,6 +75,12 @@ public class ConsoleCommands
 	[ConsoleCommand("parse", "Parses a file", "path")]
 	public void ParseFile(object[] args)
 	{
+		if (_xmlParserServer == null)
+		{
+			Console.WriteLine("Invalid server");
+			return;
+		}
+		
 		var path = args[0].ToString();
 		if (string.IsNullOrWhiteSpace(path))
 		{
@@ -88,7 +94,6 @@ public class ConsoleCommands
 			Console.WriteLine("File not found");
 			return;
 		}
-		
 		XmlData data = _xmlParserServer.ParseFile(file) as XmlData 
 		               ?? throw new Exception("Invalid data");
 		
@@ -104,7 +109,7 @@ public class ConsoleCommands
 	[ConsoleCommand("clients", "Shows all connected clients")]
 	public void ShowClients(object[] args)
 	{
-		foreach (IClient client in _server.Clients)
+		foreach (TcpClient client in _server.Clients)
 		{
 			Console.WriteLine(client);
 		}
@@ -126,7 +131,7 @@ public class ConsoleCommands
 			return;
 		}
 		
-		IClient? client = _server.Clients.FirstOrDefault(c => c.Id == clientId);
+		IDisposable? client = _server.Clients.ElementAtOrDefault(clientId);
 		if (client == null)
 		{
 			Console.WriteLine("Client not found");

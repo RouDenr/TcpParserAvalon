@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Sockets;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 
@@ -12,17 +13,20 @@ public abstract class AServer(IClientHandler clientHandler, IDataProcessor dataP
 	
 	public int Port => ClientHandler.Port;
 	public IPAddress Ip => ClientHandler.Ip;
-	public bool IsRunning { get; set; }
-	public IEnumerable<IClient> Clients => ClientHandler.Clients;
+	public bool IsRunning => ClientHandler.IsRunning;
+	public IEnumerable<IDisposable> Clients => ClientHandler.Clients;
 
-	public virtual Task Start()
+	public virtual async Task Start()
 	{
 		DataProcessor.Init();
-		
-		
-		return Task.CompletedTask;
+		// start listening for client connection
+		await ClientHandler.HandleClients();
 	}
 
-	public abstract void Stop();
+	public virtual void Stop()
+	{
+		
+		ClientHandler.StopHandle();
+	}
 
 }
