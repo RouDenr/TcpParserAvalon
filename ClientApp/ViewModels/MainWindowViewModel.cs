@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using DynamicData;
 using ReactiveUI;
 
@@ -6,6 +7,8 @@ namespace ClientApp.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public static event Action LoginSuccessEvent = delegate { };
+        
         public MainWindowViewModel()
         {
             // Set current page to first on start up
@@ -17,6 +20,8 @@ namespace ClientApp.ViewModels
 
             NavigateNextCommand = ReactiveCommand.Create(NavigateNext, canNavNext);
             NavigatePreviousCommand = ReactiveCommand.Create(NavigatePrevious, canNavPrev);
+
+            LoginSuccessEvent += NavigateNext;
         }
 
         // A readonly array of possible pages
@@ -64,6 +69,11 @@ namespace ClientApp.ViewModels
 
             //  /!\ Be aware that we have no check if the index is valid. You may want to add it on your own. /!\
             CurrentPage = _pages[index];
+        }
+
+        public static void OnLoginSuccessEvent()
+        {
+            LoginSuccessEvent.Invoke();
         }
     }
 }

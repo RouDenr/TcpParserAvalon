@@ -45,6 +45,7 @@ public class LoginViewModel : PageViewModelBase
             ConnectionStatus = "Connected";
             ConnectionStatusColor = new SolidColorBrush(Colors.Green);
             CanNavigateNext = true;
+            MainWindowViewModel.OnLoginSuccessEvent();
         }
         else
         {
