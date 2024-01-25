@@ -15,7 +15,7 @@
     
     <Grid>
         <TextBlock
-            Text="{Binding WelcomeMessage}"
+            Text="{Binding ServerInfo}"
             />
     </Grid>
 </UserControl>

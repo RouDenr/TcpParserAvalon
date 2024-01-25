@@ -13,11 +13,12 @@ public class ServerHandler : SocketHandler
 {
 	
 	public static ServerHandler Instance => _instance ??= new ServerHandler();
+	public event EventHandler<ServerHandler>? ServerInfoChangedEvent;
 	
-	private static ServerHandler? _instance;
 
+	private static ServerHandler? _instance;
 	private ServerHandler() : base(new TcpClient()) { }
-	private Socket? ServerSocket { get; set; }
+	private Socket? ServerSocket => Socket.Client;
 
 	public string ServerInfo()
 	{
@@ -46,8 +47,14 @@ public class ServerHandler : SocketHandler
 		}
 		Console.WriteLine($"Connected to {Socket.Client.RemoteEndPoint}");
 		
+		OnServerInfoChanged(this);
 		var readHandle = ReadHandle();
 		
 		return connect;
+	}
+
+	protected virtual void OnServerInfoChanged(ServerHandler server)
+	{
+		ServerInfoChangedEvent?.Invoke(this, server);
 	}
 }
