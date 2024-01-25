@@ -109,9 +109,10 @@ public class ConsoleCommands
 	[ConsoleCommand("clients", "Shows all connected clients")]
 	public void ShowClients(object[] args)
 	{
-		foreach (TcpClient client in _server.Clients)
+		var id = 0;
+		foreach (IDisposable client in _server.Clients)
 		{
-			Console.WriteLine(client);
+			Console.WriteLine($"{id++}: {client}");
 		}
 	}
 	

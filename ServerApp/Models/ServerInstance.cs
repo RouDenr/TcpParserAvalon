@@ -9,7 +9,7 @@ namespace ServerApp.Models;
 public class ServerInstance
 {
 	public XmlParserServer ParseServer => Server as XmlParserServer ?? throw new NullReferenceException("Server is null");
-	public TcpClientHandler TcpClients => Clients as TcpClientHandler ?? throw new NullReferenceException("Clients is null");
+	public TcpClientsHandler TcpClientses => Clients as TcpClientsHandler ?? throw new NullReferenceException("Clients is null");
 	
 	private IServer Server { get; }
 	private IClientHandler Clients { get; }
@@ -21,7 +21,7 @@ public class ServerInstance
 	private ServerInstance()
 	{
 		XmlDataFactory factory = new ();
-		Clients = new TcpClientHandler();
+		Clients = new TcpClientsHandler();
 		Server = new XmlParserServer(Clients, factory.CreateDataProcessor(), factory.CreateParser());
 	}
 

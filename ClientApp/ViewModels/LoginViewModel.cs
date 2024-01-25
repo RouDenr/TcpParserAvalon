@@ -42,11 +42,11 @@ public class LoginViewModel : PageViewModelBase
     {
         bool isUsernameValid = !string.IsNullOrWhiteSpace(Username);
         
-        Task connect = ClientHandler.Instance.Connect();
+        Task connect = Task.Run(ServerHandler.Instance.Connect);
         connect.Wait();
         
         
-        if (isUsernameValid && ClientHandler.Instance.IsConnected)
+        if (isUsernameValid && ServerHandler.Instance.IsConnected)
         {
             ConnectionStatus = "Connected";
             ConnectionStatusColor = new SolidColorBrush(Colors.Green);

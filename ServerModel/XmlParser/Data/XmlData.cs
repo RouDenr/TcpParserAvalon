@@ -1,4 +1,7 @@
-﻿namespace ServerModel.XmlParser.Data;
+﻿using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+
+namespace ServerModel.XmlParser.Data;
 
 [Serializable]
 public class XmlData(string path, string? from, string? to, string? text, int color, byte[] image) 
@@ -13,7 +16,7 @@ public class XmlData(string path, string? from, string? to, string? text, int co
 	private static int Count { get; set; }
 
 
-	public IData Clone()
+	public override IData Clone()
 	{
 		return new XmlData(Path, From, To, Text, Color, Image);
 	}

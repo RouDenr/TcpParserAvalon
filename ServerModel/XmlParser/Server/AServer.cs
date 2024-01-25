@@ -18,7 +18,10 @@ public abstract class AServer(IClientHandler clientHandler, IDataProcessor dataP
 
 	public virtual async Task Start()
 	{
+		await Task.Yield();
+		
 		DataProcessor.Init();
+		Console.WriteLine($"Server started on {Ip}:{Port}");
 		// start listening for client connection
 		await ClientHandler.HandleClients();
 	}
