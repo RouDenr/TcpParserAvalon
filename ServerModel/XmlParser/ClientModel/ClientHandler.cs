@@ -3,10 +3,10 @@ using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.ClientModel;
 
-class ClientManage : SocketManage
+class ClientHandler : SocketHandler
 {
 	public string Name { get; set; } = "";
-	public ClientManage(TcpClient socket) : base(socket)
+	public ClientHandler(TcpClient socket) : base(socket)
 	{
 		
 		DataReceivedEvent += (_, args) => NamеMessageHandler(args);

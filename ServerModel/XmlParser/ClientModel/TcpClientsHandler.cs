@@ -13,7 +13,7 @@ public class TcpClientsHandler
 	public IResponseHandler ResponseHandler { get; }
 	public bool IsRunning => Listener.Server.IsBound;
 	
-	private List<ClientManage> ClientsList { get; }
+	private List<ClientHandler> ClientsList { get; }
 	private TcpListener Listener { get; }
 	public TcpClientsHandler()
 	{
@@ -24,8 +24,8 @@ public class TcpClientsHandler
 		if (Listener == null)
 			throw new Exception("Failed to create TcpListener");
 		
-		Clients = new List<ClientManage>();
-		ClientsList = Clients as List<ClientManage> ?? throw new Exception("Failed to cast Clients to List<IClient>");
+		Clients = new List<ClientHandler>();
+		ClientsList = Clients as List<ClientHandler> ?? throw new Exception("Failed to cast Clients to List<IClient>");
 		ResponseHandler = new TcpResponseHandler();
 	}
 
@@ -44,10 +44,11 @@ public class TcpClientsHandler
 			{
 				// wait for client to connect
 				var client = await Listener.AcceptTcpClientAsync() ?? throw new Exception("Failed to accept client");
-				ClientManage socketManage = new(client);
-				ClientsList.Add(socketManage);
-				socketManage.DisconnectedEvent += DisconnectClient;
-				_ = Task.Run(() => socketManage.ReadHandle());
+				ClientHandler socketHandler = new(client);
+				ClientsList.Add(socketHandler);
+				Console.WriteLine($"Client connected: {client.Client.RemoteEndPoint}");
+				socketHandler.DisconnectedEvent += DisconnectClient;
+				_ = socketHandler.ReadHandle();
 			}
 		}
 		finally
@@ -56,9 +57,9 @@ public class TcpClientsHandler
 		}
 	}
 
-	private void DisconnectClient(object? sender, SocketManage socket)
+	private void DisconnectClient(object? sender, SocketHandler socket)
 	{
-		if (socket is not ClientManage client)
+		if (socket is not ClientHandler client)
 			return;
 		ClientsList.Remove(client);
 		client.DisconnectedEvent -= DisconnectClient;

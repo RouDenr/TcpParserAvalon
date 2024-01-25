@@ -42,9 +42,9 @@ public class LoginViewModel : PageViewModelBase
     {
         bool isUsernameValid = !string.IsNullOrWhiteSpace(Username);
         
-        Task connect = Task.Run(ServerHandler.Instance.Connect);
-        connect.Wait();
+        var connect = ServerHandler.Instance.Connect();
         
+        connect.Wait();
         
         if (isUsernameValid && ServerHandler.Instance.IsConnected)
         {

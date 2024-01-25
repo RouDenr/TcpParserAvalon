@@ -9,7 +9,7 @@ using ServerModel.XmlParser.Server;
 
 namespace ClientApp.Models;
 
-public class ServerHandler : SocketManage
+public class ServerHandler : SocketHandler
 {
 	
 	public static ServerHandler Instance => _instance ??= new ServerHandler();
@@ -17,16 +17,22 @@ public class ServerHandler : SocketManage
 	private static ServerHandler? _instance;
 
 	private ServerHandler() : base(new TcpClient()) { }
+	private Socket? ServerSocket { get; set; }
 
 	public string ServerInfo()
 	{
+		if (ServerSocket == null)
+		{
+			Console.WriteLine("Failed to get server info");
+			return string.Empty;
+		}
+		
 		StringBuilder sb = new();
 		
-		sb.AppendLine($"Connected to {Socket.Client.RemoteEndPoint}");
-		sb.AppendLine($"Local address: {Socket.Client.LocalEndPoint}");
-		sb.AppendLine($"Available: {Socket.Available}");
-		sb.AppendLine($"Connected: {Socket.Connected}");
-		sb.AppendLine($"Exclusive address use: {Socket.ExclusiveAddressUse}");
+		sb.AppendLine($"Connected to {ServerSocket.RemoteEndPoint}");
+		sb.AppendLine($"Local endpoint: {ServerSocket.LocalEndPoint}");
+		sb.AppendLine($"Connected: {ServerSocket.Connected}");
+		Console.WriteLine(sb.ToString());
 		return sb.ToString();
 	}
 
@@ -40,7 +46,7 @@ public class ServerHandler : SocketManage
 		}
 		Console.WriteLine($"Connected to {Socket.Client.RemoteEndPoint}");
 		
-		Task.Run(async () => await ReadHandle());
+		var readHandle = ReadHandle();
 		
 		return connect;
 	}

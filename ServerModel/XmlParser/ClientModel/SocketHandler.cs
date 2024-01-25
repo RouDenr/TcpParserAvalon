@@ -3,16 +3,16 @@ using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.ClientModel;
 
-public class SocketManage : IConnectManage
+public class SocketHandler : IConnectManage
 {
 	public bool IsConnected => Socket.Connected;
 	
 	public event EventHandler<IData>? DataReceivedEvent;
-	public event EventHandler<SocketManage>? DisconnectedEvent;
+	public event EventHandler<SocketHandler>? DisconnectedEvent;
 	
 	protected TcpClient Socket { get; }
 	
-	public SocketManage(TcpClient socket)
+	public SocketHandler(TcpClient socket)
 	{
 		Socket = socket;
 	}
@@ -35,7 +35,7 @@ public class SocketManage : IConnectManage
 			}
 			finally
 			{
-				Console.WriteLine($"Socket disconnected: {Socket.Client.RemoteEndPoint}");
+				Dispose();
 			}
 		}
 		
