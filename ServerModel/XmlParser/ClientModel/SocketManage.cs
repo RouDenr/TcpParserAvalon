@@ -8,7 +8,7 @@ public class SocketManage : IConnectManage
 	public bool IsConnected => Socket.Connected;
 	
 	public event EventHandler<IData>? DataReceivedEvent;
-	public event EventHandler<EventArgs>? DisconnectedEvent;
+	public event EventHandler<SocketManage>? DisconnectedEvent;
 	
 	protected TcpClient Socket { get; }
 	
@@ -94,6 +94,6 @@ public class SocketManage : IConnectManage
 
 	private void OnClientDisconnectedInvoke()
 	{
-		DisconnectedEvent?.Invoke(this, EventArgs.Empty);
+		DisconnectedEvent?.Invoke(this, this);
 	}
 }

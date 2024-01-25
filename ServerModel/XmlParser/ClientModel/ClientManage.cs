@@ -12,8 +12,7 @@ class ClientManage : SocketManage
 		DataReceivedEvent += (_, args) => NamеMessageHandler(args);
 		DisconnectedEvent += (_, _) => { Console.WriteLine($"Client disconnected: {Socket.Client.RemoteEndPoint}"); };
 	}
-
-
+	
 	private void NamеMessageHandler(IData data)
 	{
 		if (Name != string.Empty || data is not SimpleTextData nameMessage)

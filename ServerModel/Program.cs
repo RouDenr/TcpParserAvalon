@@ -19,7 +19,7 @@ while (true)
 	try
 	{
 		Console.Write(">");
-		string? command = Console.ReadLine();
+		var command = Console.ReadLine();
 		
 		commands.HandleCommand(command);
 	}

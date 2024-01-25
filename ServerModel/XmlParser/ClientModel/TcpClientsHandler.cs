@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser.ClientModel;
@@ -47,6 +46,7 @@ public class TcpClientsHandler
 				var client = await Listener.AcceptTcpClientAsync() ?? throw new Exception("Failed to accept client");
 				ClientManage socketManage = new(client);
 				ClientsList.Add(socketManage);
+				socketManage.DisconnectedEvent += DisconnectClient;
 				_ = Task.Run(() => socketManage.ReadHandle());
 			}
 		}
@@ -54,6 +54,14 @@ public class TcpClientsHandler
 		{
 			StopHandle();
 		}
+	}
+
+	private void DisconnectClient(object? sender, SocketManage socket)
+	{
+		if (socket is not ClientManage client)
+			return;
+		ClientsList.Remove(client);
+		client.DisconnectedEvent -= DisconnectClient;
 	}
 
 	public void StopHandle()
