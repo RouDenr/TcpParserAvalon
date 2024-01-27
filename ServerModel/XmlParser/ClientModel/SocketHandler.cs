@@ -1,10 +1,10 @@
 ﻿using System.Net.Sockets;
-using ServerModel.Log;
+using NLog;
 using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.ClientModel;
 
-public class SocketHandler : ALoggable, IConnectManage
+public class SocketHandler : IConnectManage
 {
 	public bool IsConnected => Socket.Connected;
 	
@@ -12,6 +12,8 @@ public class SocketHandler : ALoggable, IConnectManage
 	public event EventHandler<SocketHandler>? DisconnectedEvent;
 	
 	protected TcpClient Socket { get; }
+	
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 	
 	public SocketHandler(TcpClient socket)
 	{

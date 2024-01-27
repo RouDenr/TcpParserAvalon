@@ -1,16 +1,18 @@
-﻿using ServerModel.Log;
+﻿using NLog;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser;
 
-public abstract class AServerBuilder : ALoggable
+public abstract class AServerBuilder
 {
 	private ConnectionData? ConnectionData { get; set; }
 	protected IClientHandler? ClientHandler { get; set; }
 	protected IDataProcessor? DataProcessor { get; set; }
 	protected IParser? Parser { get; set; }
+	
+	public static readonly Logger Log = LogManager.GetCurrentClassLogger();
 	
 	// Setters
 	public AServerBuilder SetConnectionData(ConnectionData connectionData)

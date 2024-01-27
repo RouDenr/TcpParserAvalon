@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization.Formatters.Binary;
-using ServerModel.Log;
 
 namespace ServerModel.XmlParser.Data;
 

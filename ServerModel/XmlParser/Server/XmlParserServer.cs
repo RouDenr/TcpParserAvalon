@@ -9,11 +9,6 @@ public class XmlParserServer(IClientHandler clientHandler, IDataProcessor dataPr
 	IParser Parser { get; } = parser;
 	
 
-	public override void Stop()
-	{
-		throw new NotImplementedException();
-	}
-
 	public IData ParseFile(FileInfo file)
 	{
 		return Parser.Parse(file.FullName);
