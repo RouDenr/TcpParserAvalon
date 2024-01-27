@@ -20,6 +20,7 @@ sealed class Program
 		
         logConfig.AddRule(LogLevel.Info, LogLevel.Fatal, logConsole);
         logConfig.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
+        LogManager.Configuration = logConfig;
         
         BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
