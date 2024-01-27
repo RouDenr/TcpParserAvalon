@@ -1,5 +1,4 @@
 ﻿using System.Reactive;
-using System.Threading.Tasks;
 using Avalonia.Media;
 using ClientApp.Models;
 using ReactiveUI;
@@ -8,6 +7,8 @@ namespace ClientApp.ViewModels;
 
 public class LoginViewModel : PageViewModelBase
 {
+    // TODO: remove const conf path
+    private const string ConfPath = @"C:\Users\denne\.goinfre\TcpParserAvalon\ServerModel\conf.json";
     private string _username = string.Empty;
     private string _connectionStatus = "Disconnected";
     private SolidColorBrush _connectionStatusColor  = new (Colors.Red);
@@ -42,7 +43,7 @@ public class LoginViewModel : PageViewModelBase
     {
         bool isUsernameValid = !string.IsNullOrWhiteSpace(Username);
         
-        var connect = ServerHandler.Instance.Connect("conf.json");
+        var connect = ServerHandler.Instance.Connect(ConfPath);
         
         connect.Wait();
         

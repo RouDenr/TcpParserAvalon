@@ -37,9 +37,8 @@ public class ServerHandler : SocketHandler
 		return sb.ToString();
 	}
 
-	public Task Connect(string confPath)
+	private Task Connect(ConnectionData connectionData)
 	{
-		ConnectionData connectionData = new (confPath);
 		Task connect = Socket.ConnectAsync(connectionData.Ip, connectionData.Port);
 		
 		if (!Socket.Connected)
@@ -52,6 +51,18 @@ public class ServerHandler : SocketHandler
 		var readHandle = ReadHandle();
 		
 		return connect;
+	}
+	
+	public Task Connect(string confPath)
+	{
+		ConnectionData connectionData = new (confPath);
+		return Connect(connectionData);
+	}
+	
+	public Task Connect(string ip, int port)
+	{
+		ConnectionData connectionData = new (ip, port);
+		return Connect(connectionData);
 	}
 
 	protected virtual void OnServerInfoChanged(ServerHandler server)
