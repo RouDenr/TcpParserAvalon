@@ -1,6 +1,6 @@
 ﻿namespace ServerModel.XmlParser.Data;
 
-public class XmlDataProcessor(string pathData = "../../../TestResources") : IDataProcessor
+public class XmlDataProcessor(string pathData = "../../../TestResources/") : IDataProcessor
 {
 	public IEnumerable<IData> ProcessData { get; } = new List<IData>();
 
@@ -11,6 +11,9 @@ public class XmlDataProcessor(string pathData = "../../../TestResources") : IDat
 	{
 		// open DataPath and parse all data
 		DataPath = dataDirPath;
+		if (!Directory.Exists(dataDirPath))
+			throw new DirectoryNotFoundException($"Directory {dataDirPath} not found");
+		
 		var files = Directory.GetFiles(dataDirPath);
 		foreach (var file in files)
 		{
@@ -24,7 +27,9 @@ public class XmlDataProcessor(string pathData = "../../../TestResources") : IDat
 
 	public void Init()
 	{
-		Init(DataPath);
+		if (DataPath == null)
+			throw new NullReferenceException("DataPath is null");
+		Init(!Directory.Exists(DataPath) ? "TestResources/" : DataPath);
 	}
 
 	public void Update()
