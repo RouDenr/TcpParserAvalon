@@ -51,7 +51,7 @@ try
 {
 	serverBuilder.SetConnectionData(connectionData)
 	.SetClientHandler(new TcpClientsHandler(connectionData))
-	// .SetDataProcessor(new XmlDataProcessor())
+	.SetDataProcessor(new XmlDataProcessor())
 	.SetParser(new XmlParser());
 }
 catch (Exception e)
