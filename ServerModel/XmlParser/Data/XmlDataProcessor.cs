@@ -3,7 +3,7 @@
 public class XmlDataProcessor : IDataProcessor
 {
 	// TODO: init ProcessData with data from config file
-	private static readonly string DataDirPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResources");
+	public static readonly string DataDirPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResources");
 	
 	public IEnumerable<IData> ProcessData { get; } = new List<IData>();
 

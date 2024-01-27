@@ -33,4 +33,36 @@ public class ConnectionData
 		Ip = IPAddress.Parse(confJson["ip"]);
 		Port = int.Parse(confJson["port"]);
 	}
+
+	public ConnectionData()
+	{
+		
+		if (!File.Exists("conf.json"))
+		{
+			File.WriteAllText("conf.json", CreateDefaultConf());
+		}
+		var conf = File.ReadAllText("conf.json");
+
+
+		var confJson = JsonSerializer.Deserialize<Dictionary<string, string>>(conf);
+		
+		if (confJson == null)
+			throw new FormatException("Failed to deserialize conf.json");
+		
+		Ip = IPAddress.Parse(confJson["ip"]);
+		Port = int.Parse(confJson["port"]);
+	}
+
+	private string CreateDefaultConf()
+	{
+		var conf = new Dictionary<string, string>
+		{
+			{ "ip", "107.0.0.1" },
+			{ "port", "8888" }
+		};
+		
+		var json = JsonSerializer.Serialize(conf);
+		Console.WriteLine(json);
+		return json;
+	}
 }

@@ -63,12 +63,6 @@ public abstract class AServerBuilder : ALoggable
 	/// <exception cref="NullReferenceException"> Throws if any connection data is null</exception>
 	public IServer Build()
 	{
-		if (ConnectionData is null)
-		{
-			Log.Error("Connection data is not set");
-			throw new NullReferenceException("Connection data is not set");
-		}
-		
 		if (ClientHandler is null)
 		{
 			Log.Error("Client handler is not set");
