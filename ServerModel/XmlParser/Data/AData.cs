@@ -3,7 +3,8 @@ using ServerModel.Log;
 
 namespace ServerModel.XmlParser.Data;
 
-public abstract class AData : ALoggable, IData
+[Serializable]
+public abstract class AData : IData
 {
 	public abstract IData Clone();
 

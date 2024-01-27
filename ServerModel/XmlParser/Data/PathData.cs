@@ -1,5 +1,6 @@
 ﻿namespace ServerModel.XmlParser.Data;
 
+[Serializable]
 public class PathData(string path)
 	: AData
 {

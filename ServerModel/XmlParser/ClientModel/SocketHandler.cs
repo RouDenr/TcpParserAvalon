@@ -47,6 +47,7 @@ public class SocketHandler : ALoggable, IConnectManage
 		try
 		{
 			var buffer = new byte[Socket.ReceiveBufferSize];
+			Log.Info($"Waiting for data from {Socket.Client.RemoteEndPoint}");
 			var bytesRead = await Socket.GetStream()
 				.ReadAsync(buffer.AsMemory(0, Socket.ReceiveBufferSize));
 			return bytesRead == 0 ? null : AData.Deserialize(buffer);

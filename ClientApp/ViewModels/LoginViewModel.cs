@@ -2,6 +2,7 @@
 using Avalonia.Media;
 using ClientApp.Models;
 using ReactiveUI;
+using ServerModel.XmlParser.Data;
 
 namespace ClientApp.ViewModels;
 
@@ -47,10 +48,18 @@ public class LoginViewModel : PageViewModelBase
         
         connect.Wait();
         
+        LoginValid(isUsernameValid);
+    }
+
+    private void LoginValid(bool isUsernameValid)
+    {
         if (isUsernameValid && ServerHandler.Instance.IsConnected)
         {
             ConnectionStatus = "Connected";
             ConnectionStatusColor = new SolidColorBrush(Colors.Green);
+            
+            _ = ServerHandler.Instance.SendDataAsync(new SimpleTextData($"name: {Username}"));
+            
             CanNavigateNext = true;
             MainWindowViewModel.OnLoginSuccessEvent();
         }
