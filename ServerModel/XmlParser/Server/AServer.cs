@@ -19,6 +19,7 @@ public abstract class AServer(IClientHandler clientHandler, IDataProcessor dataP
 
 	public virtual async Task Start()
 	{
+		Console.WriteLine("Server started");
 		await Task.Yield();
 		
 		DataProcessor.Init();
