@@ -57,7 +57,7 @@ public class ConnectionData
 	{
 		var conf = new Dictionary<string, string>
 		{
-			{ "ip", "107.0.0.1" },
+			{ "ip", "127.0.0.1" },
 			{ "port", "8888" }
 		};
 		
