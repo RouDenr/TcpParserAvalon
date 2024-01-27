@@ -1,10 +1,11 @@
-﻿using ServerModel.XmlParser.ClientModel;
+﻿using ServerModel.Log;
+using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser;
 
-public abstract class AServerBuilder
+public abstract class AServerBuilder : ALoggable
 {
 	private ConnectionData? ConnectionData { get; set; }
 	protected IClientHandler? ClientHandler { get; set; }
@@ -36,7 +37,9 @@ public abstract class AServerBuilder
 	public AServerBuilder SetClientHandler()
 	{
 		if (ConnectionData is null)
+		{
 			throw new NullReferenceException("Connection data is not set");
+		}
 		ClientHandler = new TcpClientsHandler(ConnectionData);
 		return this;
 	}
@@ -61,16 +64,28 @@ public abstract class AServerBuilder
 	public IServer Build()
 	{
 		if (ConnectionData is null)
+		{
+			Log.Error("Connection data is not set");
 			throw new NullReferenceException("Connection data is not set");
+		}
 		
 		if (ClientHandler is null)
+		{
+			Log.Error("Client handler is not set");
 			throw new NullReferenceException("Client handler is not set");
+		}
 		
 		if (DataProcessor is null)
+		{
+			Log.Error("Data processor is not set");
 			throw new NullReferenceException("Data processor is not set");
+		}
 		
 		if (Parser is null)
+		{
+			Log.Error("Parser is not set");
 			throw new NullReferenceException("Parser is not set");
+		}
 		
 		return BuildServer();
 	} 

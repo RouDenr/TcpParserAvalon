@@ -10,7 +10,7 @@ class ClientHandler : SocketHandler
 	{
 		
 		DataReceivedEvent += (_, args) => NamеMessageHandler(args);
-		DisconnectedEvent += (_, _) => { Console.WriteLine($"Client disconnected: {Socket.Client.RemoteEndPoint}"); };
+		DisconnectedEvent += (_, _) => { Log.Info($"{this} disconnected"); };
 	}
 	
 	private void NamеMessageHandler(IData data)

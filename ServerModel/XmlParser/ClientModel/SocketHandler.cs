@@ -1,9 +1,10 @@
 ﻿using System.Net.Sockets;
+using ServerModel.Log;
 using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.ClientModel;
 
-public class SocketHandler : IConnectManage
+public class SocketHandler : ALoggable, IConnectManage
 {
 	public bool IsConnected => Socket.Connected;
 	

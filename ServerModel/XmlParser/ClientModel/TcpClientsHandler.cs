@@ -1,11 +1,12 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using ServerModel.Log;
 using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser.ClientModel;
 
 public class TcpClientsHandler
-	: IClientHandler
+	: ALoggable, IClientHandler
 {
 	public int Port { get; }
 	public IPAddress Ip { get; }
@@ -18,15 +19,20 @@ public class TcpClientsHandler
 	public TcpClientsHandler(ConnectionData connectionData)
 	{
 		Port = connectionData.Port;
-		Ip = connectionData.Ip; 
-			
-		Listener = new TcpListener(Ip, Port);
-		if (Listener == null)
-			throw new Exception("Failed to create TcpListener");
-		
-		Clients = new List<ClientHandler>();
-		ClientsList = Clients as List<ClientHandler> ?? throw new Exception("Failed to cast Clients to List<IClient>");
-		ResponseHandler = new TcpResponseHandler();
+		Ip = connectionData.Ip;
+		try {
+			Listener = new TcpListener(Ip, Port);
+			if (Listener == null)
+				throw new Exception("Failed to create TcpListener");
+
+			Clients = new List<ClientHandler>();
+			ClientsList = Clients as List<ClientHandler> ??
+			              throw new Exception("Failed to cast Clients to List<IClient>");
+			ResponseHandler = new TcpResponseHandler();
+		} catch (Exception e) {
+			Log.Error(e.Message);
+			throw;
+		}
 	}
 
 	public async Task HandleClients()
@@ -36,7 +42,7 @@ public class TcpClientsHandler
 
 		if (!Listener.Server.IsBound)
 			throw new Exception("Failed to start listening for client connection");
-		Console.WriteLine($"Listening for client connection on {Ip}:{Port}");
+		Log.Info($"Server started on {Ip}:{Port}");
 
 		try
 		{
@@ -46,10 +52,15 @@ public class TcpClientsHandler
 				var client = await Listener.AcceptTcpClientAsync() ?? throw new Exception("Failed to accept client");
 				ClientHandler socketHandler = new(client);
 				ClientsList.Add(socketHandler);
-				Console.WriteLine($"Client connected: {client.Client.RemoteEndPoint}");
+				Log.Info($"Client connected: {client.Client.RemoteEndPoint}");
 				socketHandler.DisconnectedEvent += DisconnectClient;
 				_ = socketHandler.ReadHandle();
 			}
+		}
+		catch (Exception e)
+		{
+			Log.Error(e.Message);
+			throw;
 		}
 		finally
 		{

@@ -14,4 +14,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="NLog" Version="5.2.8" />
+    </ItemGroup>
+
 </Project>

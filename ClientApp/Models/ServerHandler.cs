@@ -24,7 +24,7 @@ public class ServerHandler : SocketHandler
 	{
 		if (ServerSocket == null)
 		{
-			Console.WriteLine("Failed to get server info");
+			Log.Error("Server socket is null");
 			return string.Empty;
 		}
 		
@@ -43,12 +43,13 @@ public class ServerHandler : SocketHandler
 		
 		if (!Socket.Connected)
 		{
-			Console.WriteLine("Failed to connect");
+			Log.Error($"Failed to connect to {connectionData.Ip}:{connectionData.Port}");
+			return connect;
 		}
-		Console.WriteLine($"Connected to {Socket.Client.RemoteEndPoint}");
+		Log.Info($"Connected to {connectionData.Ip}:{connectionData.Port}");
 		
 		OnServerInfoChanged(this);
-		var readHandle = ReadHandle();
+		_ = ReadHandle();
 		
 		return connect;
 	}

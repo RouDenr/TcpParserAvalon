@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using ServerModel.Log;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.Server;
 
 public abstract class AServer(IClientHandler clientHandler, IDataProcessor dataProcessor)
-	: IServer
+	: ALoggable, IServer
 {
 	public IClientHandler ClientHandler { get; } = clientHandler;
 	public IDataProcessor DataProcessor { get; } = dataProcessor;
@@ -21,7 +22,7 @@ public abstract class AServer(IClientHandler clientHandler, IDataProcessor dataP
 		await Task.Yield();
 		
 		DataProcessor.Init();
-		Console.WriteLine($"Server started on {Ip}:{Port}");
+		Log.Info($"Server started on {Ip}:{Port}");
 		// start listening for client connection
 		await ClientHandler.HandleClients();
 	}

@@ -5,6 +5,20 @@ using ServerModel.XmlParser;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 using ServerModel.XmlParser.Server;
+using NLog;
+
+var logConfig = new NLog.Config.LoggingConfiguration();
+
+var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "log.txt" };
+var logConsole = new NLog.Targets.ConsoleTarget("logconsole");
+
+logConfig.AddRule(LogLevel.Info, LogLevel.Fatal, logConsole);
+logConfig.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+LogManager.Configuration = logConfig;
+
+
+
+var logger = LogManager.GetCurrentClassLogger();
 
 var serverBuilder = new XmlParserServerBuilder();
 
@@ -29,17 +43,33 @@ try
 }
 catch (Exception)
 {
-	Console.WriteLine("Failed to load config file. Using default values");
+	logger.Error("Invalid arguments");
 	return;
 }
 
-serverBuilder.SetConnectionData(connectionData)
+try 
+{
+	serverBuilder.SetConnectionData(connectionData)
 	.SetClientHandler(new TcpClientsHandler(connectionData))
-	.SetDataProcessor(new XmlDataProcessor())
+	// .SetDataProcessor(new XmlDataProcessor())
 	.SetParser(new XmlParser());
+}
+catch (Exception e)
+{
+	logger.Error(e);
+	return;
+}
 
-
-XmlParserServer server = serverBuilder.Build() as XmlParserServer ?? throw new NullReferenceException("Server is null");
+XmlParserServer server;
+try
+{
+	server = serverBuilder.Build() as XmlParserServer ?? throw new NullReferenceException("Server is null");
+}
+catch (Exception e)
+{
+	logger.Error(e);
+	return;
+}
 
 // Start server
 _ = server.Start();
@@ -56,6 +86,6 @@ while (true)
 	}
 	catch (Exception e)
 	{
-		Console.WriteLine($"Error: {e}");
+		logger.Error(e);
 	}
 }
