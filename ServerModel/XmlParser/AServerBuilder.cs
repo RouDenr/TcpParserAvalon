@@ -8,7 +8,7 @@ namespace ServerModel.XmlParser;
 public abstract class AServerBuilder
 {
 	private ConnectionData? ConnectionData { get; set; }
-	protected IClientHandler? ClientHandler { get; set; }
+	protected IClientsManage? ClientHandler { get; set; }
 	protected IDataProcessor? DataProcessor { get; set; }
 	protected IParser? Parser { get; set; }
 	
@@ -31,9 +31,9 @@ public abstract class AServerBuilder
 		return this;
 	}
 	
-	public AServerBuilder SetClientHandler(IClientHandler clientHandler)
+	public AServerBuilder SetClientHandler(IClientsManage clientsManage)
 	{
-		ClientHandler = clientHandler;
+		ClientHandler = clientsManage;
 		return this;
 	}
 	public AServerBuilder SetClientHandler()
@@ -42,7 +42,7 @@ public abstract class AServerBuilder
 		{
 			throw new NullReferenceException("Connection data is not set");
 		}
-		ClientHandler = new TcpClientsHandler(ConnectionData);
+		ClientHandler = new TcpClientsManage(ConnectionData);
 		return this;
 	}
 	

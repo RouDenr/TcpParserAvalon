@@ -2,7 +2,7 @@
 
 namespace ServerModel.XmlParser.ClientModel;
 
-public interface IClientHandler
+public interface IClientsManage
 {
 	int Port { get; }
 	IPAddress Ip { get; }

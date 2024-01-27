@@ -5,8 +5,8 @@ using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser.ClientModel;
 
-public class TcpClientsHandler
-	: IClientHandler
+public class TcpClientsManage
+	: IClientsManage
 {
 	public int Port { get; }
 	public IPAddress Ip { get; }
@@ -18,7 +18,7 @@ public class TcpClientsHandler
 	
 	private List<ClientHandler> ClientsList { get; }
 	private TcpListener Listener { get; }
-	public TcpClientsHandler(ConnectionData connectionData)
+	public TcpClientsManage(ConnectionData connectionData)
 	{
 		Port = connectionData.Port;
 		Ip = connectionData.Ip;

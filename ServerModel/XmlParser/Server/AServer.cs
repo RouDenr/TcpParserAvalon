@@ -11,19 +11,19 @@ public abstract class AServer
 {
 	public event EventHandler ServerStartedEvent;
 	
-	public IClientHandler ClientHandler { get; }
+	public IClientsManage ClientsManage { get; }
 	public IDataProcessor DataProcessor { get; }
 	
-	public int Port => ClientHandler.Port;
-	public IPAddress Ip => ClientHandler.Ip;
-	public bool IsRunning => ClientHandler.IsRunning;
-	public IEnumerable<IDisposable> Clients => ClientHandler.Clients;
+	public int Port => ClientsManage.Port;
+	public IPAddress Ip => ClientsManage.Ip;
+	public bool IsRunning => ClientsManage.IsRunning;
+	public IEnumerable<IDisposable> Clients => ClientsManage.Clients;
 	
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	public AServer(IClientHandler clientHandler, IDataProcessor dataProcessor)
+	public AServer(IClientsManage clientsManage, IDataProcessor dataProcessor)
 	{
-		ClientHandler = clientHandler;
+		ClientsManage = clientsManage;
 		DataProcessor = dataProcessor;
 		
 		ServerStartedEvent += (_,_)=>
@@ -40,13 +40,13 @@ public abstract class AServer
 		OnServerStartedEvent();
 		
 		// start listening for client connection
-		await ClientHandler.HandleClients();
+		await ClientsManage.HandleClients();
 	}
 
 	public virtual void Stop()
 	{
 		
-		ClientHandler.StopHandle();
+		ClientsManage.StopHandle();
 	}
 
 	protected virtual void OnServerStartedEvent()
