@@ -42,7 +42,7 @@ public class LoginViewModel : PageViewModelBase
     {
         bool isUsernameValid = !string.IsNullOrWhiteSpace(Username);
         
-        var connect = ServerHandler.Instance.Connect();
+        var connect = ServerHandler.Instance.Connect("conf.json");
         
         connect.Wait();
         

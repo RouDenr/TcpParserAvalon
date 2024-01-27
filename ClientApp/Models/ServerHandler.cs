@@ -37,9 +37,10 @@ public class ServerHandler : SocketHandler
 		return sb.ToString();
 	}
 
-	public Task Connect()
+	public Task Connect(string confPath)
 	{
-		Task connect = Socket.ConnectAsync(ConnectionData.Ip, ConnectionData.Port);
+		ConnectionData connectionData = new (confPath);
+		Task connect = Socket.ConnectAsync(connectionData.Ip, connectionData.Port);
 		
 		if (!Socket.Connected)
 		{

@@ -15,10 +15,10 @@ public class TcpClientsHandler
 	
 	private List<ClientHandler> ClientsList { get; }
 	private TcpListener Listener { get; }
-	public TcpClientsHandler()
+	public TcpClientsHandler(ConnectionData connectionData)
 	{
-		Port = ConnectionData.Port;
-		Ip = ConnectionData.Ip; 
+		Port = connectionData.Port;
+		Ip = connectionData.Ip; 
 			
 		Listener = new TcpListener(Ip, Port);
 		if (Listener == null)
