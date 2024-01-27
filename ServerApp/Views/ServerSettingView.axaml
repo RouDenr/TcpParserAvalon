@@ -1,0 +1,55 @@
+﻿<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:ServerApp.ViewModels"
+    mc:Ignorable="d"
+    x:Class="ServerApp.Views.ServerSettingView"
+    x:DataType="vm:ServerSettingViewModel"
+    >
+    
+    <Grid>
+        <StackPanel Margin="10"
+                    Orientation="Vertical"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    >
+            
+            <StackPanel.Styles>
+                <Style Selector="TextBox">
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="Width" Value="500" />
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    <!-- if server is running, disable all textboxes -->
+                    <Setter Property="IsEnabled" Value="{Binding !IsRunning}" />
+                </Style>
+                <Style Selector="TextBlock">
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="FontSize" Value="20" />
+                </Style>
+                <Style Selector="Button">
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="Width" Value="500" />
+                    <Setter Property="FontSize" Value="20" />
+                </Style>
+            </StackPanel.Styles>
+            
+            
+            <TextBlock Text="Server Name" />
+            <TextBox Text="{Binding ServerName}" />
+            <TextBlock Text="IP"/>
+            <TextBox Text="{Binding ServerIp}" />
+            <TextBlock Text="Server Port" />
+            <TextBox Text="{Binding ServerPort}" />
+            
+            <!-- connect or disconnect button -->
+            <!-- if server is running, swich color to red and change text to disconnect -->
+            <Button Content="{Binding ConnectButtonText}"
+                    Command="{Binding ConnectCommand}"
+                    Background="{Binding ConnectButtonColor}"
+                    />
+        </StackPanel>
+    </Grid>
+
+</UserControl>

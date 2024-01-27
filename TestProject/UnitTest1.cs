@@ -12,7 +12,7 @@ public class UnitTest1
 	private readonly ConsoleCommands _consoleCommands;
 	private readonly Mock<IServer> _serverMock;
 	private readonly Mock<ConnectionData> _connectionDataMock;
-	private readonly Mock<IClientHandler> _clientHandlerMock;
+	private readonly Mock<IClientsManage> _clientHandlerMock;
 	private readonly Mock<IDataProcessor> _dataProcessorMock;
 	private readonly Mock<IParser> _parserMock;
 	
@@ -27,7 +27,7 @@ public class UnitTest1
 		_consoleCommands = new ConsoleCommands(_serverMock.Object);
 		
 		_connectionDataMock = new Mock<ConnectionData>();
-		_clientHandlerMock = new Mock<IClientHandler>();
+		_clientHandlerMock = new Mock<IClientsManage>();
 		_dataProcessorMock = new Mock<IDataProcessor>();
 		_parserMock = new Mock<IParser>();
 	}
@@ -90,7 +90,7 @@ public class UnitTest1
 	{
 		XmlParserServerBuilder builder = XmlParserServerBuilder.CreateBuilder();
 
-		builder.SetClientHandler(new TcpClientsHandler(new ConnectionData()));
+		builder.SetClientHandler(new TcpClientsManage(new ConnectionData()));
 		Assert.Throws<NullReferenceException>(() => builder.Build());
 
 		builder.SetDataProcessor(new XmlDataProcessor());

@@ -3,16 +3,11 @@ using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.Server;
 
-public class XmlParserServer(IClientHandler clientHandler, IDataProcessor dataProcessor, IParser parser) 
-	: AServer(clientHandler, dataProcessor)
+public class XmlParserServer(IClientsManage clientsManage, IDataProcessor dataProcessor, IParser parser) 
+	: AServer(clientsManage, dataProcessor)
 {
 	IParser Parser { get; } = parser;
 	
-
-	public override void Stop()
-	{
-		throw new NotImplementedException();
-	}
 
 	public IData ParseFile(FileInfo file)
 	{

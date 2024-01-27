@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using NLog;
 using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.ClientModel;
@@ -6,6 +7,9 @@ namespace ServerModel.XmlParser.ClientModel;
 class ClientHandler : SocketHandler
 {
 	public string Name { get; set; } = "";
+	
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	
 	public ClientHandler(TcpClient socket) : base(socket)
 	{
 		

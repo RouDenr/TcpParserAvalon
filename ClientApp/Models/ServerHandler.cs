@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 using ServerModel.XmlParser.ClientModel;
 using ServerModel.XmlParser.Data;
 using ServerModel.XmlParser.Server;
@@ -17,6 +18,9 @@ public class ServerHandler : SocketHandler
 	
 
 	private static ServerHandler? _instance;
+	
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	
 	private ServerHandler() : base(new TcpClient()) { }
 	private Socket? ServerSocket => Socket.Client;
 

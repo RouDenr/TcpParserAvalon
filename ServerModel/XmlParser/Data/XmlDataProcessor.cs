@@ -1,19 +1,20 @@
 ﻿namespace ServerModel.XmlParser.Data;
 
-public class XmlDataProcessor : IDataProcessor
+public class XmlDataProcessor(string pathData = "../../../TestResources/") : IDataProcessor
 {
-	// TODO: init ProcessData with data from config file
-	public static readonly string DataDirPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResources");
-	
 	public IEnumerable<IData> ProcessData { get; } = new List<IData>();
 
 	private List<IData> ProcessDataList => ProcessData as List<IData> ?? throw new NullReferenceException();
-	public string DataPath(string path) => Path.Combine(DataDirPath, path);
+	public string DataPath { get; set; } = pathData;
 
-	public void Init()
+	public void Init(string dataDirPath)
 	{
 		// open DataPath and parse all data
-		var files = Directory.GetFiles(DataDirPath);
+		DataPath = dataDirPath;
+		if (!Directory.Exists(dataDirPath))
+			throw new DirectoryNotFoundException($"Directory {dataDirPath} not found");
+		
+		var files = Directory.GetFiles(dataDirPath);
 		foreach (var file in files)
 		{
 			// check if file is valid
@@ -23,11 +24,18 @@ public class XmlDataProcessor : IDataProcessor
 			ProcessDataList.Add(new PathData(file));
 		}
 	}
-	
+
+	public void Init()
+	{
+		if (DataPath == null)
+			throw new NullReferenceException("DataPath is null");
+		Init(!Directory.Exists(DataPath) ? "TestResources/" : DataPath);
+	}
+
 	public void Update()
 	{
 		// add new data to ProcessData
-		var files = Directory.GetFiles(DataDirPath);
+		var files = Directory.GetFiles(DataPath);
 		foreach (var file in files)
 		{
 			// check if file is valid

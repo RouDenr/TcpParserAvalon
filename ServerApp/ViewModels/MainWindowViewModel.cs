@@ -21,6 +21,7 @@ public class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel()
     {
+        ServerSettingsViewModel = new ServerSettingViewModel();
         SelectFileCommand = ReactiveCommand.CreateFromTask(SelectFile);
         _xmlParser = new XmlParser();
     }
@@ -57,5 +58,6 @@ public class MainWindowViewModel : ViewModelBase
     }
     public ICommand SelectFileCommand { get; }
     public StringBuilder Log { get => _log; set => this.RaiseAndSetIfChanged(ref _log, value); }
+    public ViewModelBase ServerSettingsViewModel { get; }
 #pragma warning restore CA1822 // Mark members as static
 }

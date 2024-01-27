@@ -4,7 +4,7 @@ namespace TestProject;
 
 public class DataProcessorTests
 {
-	private readonly XmlDataProcessor _processor = new();
+	private readonly XmlDataProcessor _processor = new("../../../TestResources");
 	
 	public DataProcessorTests()
 	{
@@ -16,7 +16,7 @@ public class DataProcessorTests
 	{
 		_processor.Init();
 		
-		var files = Directory.GetFiles(XmlDataProcessor.DataDirPath);
+		var files = Directory.GetFiles(_processor.DataPath);
 		var xmlFiles = files.Where(file => file.EndsWith(".xml")).ToList();
 		
 		Assert.Equal(xmlFiles.Count, _processor.ProcessData.Count());

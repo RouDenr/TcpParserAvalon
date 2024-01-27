@@ -16,6 +16,6 @@ public interface IServer
 	void Stop();
 	IEnumerable<IDisposable> Clients { get; }
 	
-	IClientHandler ClientHandler { get; }
+	IClientsManage ClientsManage { get; }
 	IDataProcessor DataProcessor { get; }
 }

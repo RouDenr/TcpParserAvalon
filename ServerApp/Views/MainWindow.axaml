@@ -109,5 +109,9 @@
             </Grid>
             
         </TabItem>
+        <TabItem Header="Settings"
+            >
+            <UserControl Content="{Binding ServerSettingsViewModel}"/>
+        </TabItem>
     </TabControl>
 </Window>

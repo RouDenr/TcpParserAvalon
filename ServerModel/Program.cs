@@ -19,6 +19,7 @@ LogManager.Configuration = logConfig;
 
 
 var logger = LogManager.GetCurrentClassLogger();
+logger.Info("Program started");
 
 var serverBuilder = new XmlParserServerBuilder();
 
@@ -38,7 +39,7 @@ try
 	{
 		2 => new ConnectionData(args[0], int.Parse(args[1])),
 		1 => new ConnectionData(args[0]),
-		_ => new ConnectionData("conf.json")
+		_ => new ConnectionData()
 	};
 }
 catch (Exception)
@@ -50,7 +51,7 @@ catch (Exception)
 try 
 {
 	serverBuilder.SetConnectionData(connectionData)
-	.SetClientHandler(new TcpClientsHandler(connectionData))
+	.SetClientHandler(new TcpClientsManage(connectionData))
 	.SetDataProcessor(new XmlDataProcessor())
 	.SetParser(new XmlParser());
 }
@@ -64,6 +65,7 @@ XmlParserServer server;
 try
 {
 	server = serverBuilder.Build() as XmlParserServer ?? throw new NullReferenceException("Server is null");
+	logger.Info("Server created");
 }
 catch (Exception e)
 {
