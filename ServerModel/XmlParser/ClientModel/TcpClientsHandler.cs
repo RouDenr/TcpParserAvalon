@@ -1,18 +1,20 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using ServerModel.Log;
+using NLog;
 using ServerModel.XmlParser.Server;
 
 namespace ServerModel.XmlParser.ClientModel;
 
 public class TcpClientsHandler
-	: ALoggable, IClientHandler
+	: IClientHandler
 {
 	public int Port { get; }
 	public IPAddress Ip { get; }
 	public IEnumerable<IDisposable> Clients { get; set; }
 	public IResponseHandler ResponseHandler { get; }
 	public bool IsRunning => Listener.Server.IsBound;
+	
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 	
 	private List<ClientHandler> ClientsList { get; }
 	private TcpListener Listener { get; }
@@ -37,15 +39,15 @@ public class TcpClientsHandler
 
 	public async Task HandleClients()
 	{
-		// start listening for client connection
-		Listener.Start();
-
-		if (!Listener.Server.IsBound)
-			throw new Exception("Failed to start listening for client connection");
-		Log.Info($"Server started on {Ip}:{Port}");
 
 		try
 		{
+			// start listening for client connection
+			Listener.Start();
+
+			if (!Listener.Server.IsBound)
+				throw new Exception("Failed to start listening for client connection");
+			Log.Info($"Started listening for client connection on {Ip}:{Port}");
 			while (true)
 			{
 				// wait for client to connect
