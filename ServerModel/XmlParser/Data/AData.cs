@@ -1,8 +1,9 @@
 ﻿using System.Runtime.Serialization.Formatters.Binary;
+using ServerModel.Log;
 
 namespace ServerModel.XmlParser.Data;
 
-public abstract class AData : IData
+public abstract class AData : ALoggable, IData
 {
 	public abstract IData Clone();
 

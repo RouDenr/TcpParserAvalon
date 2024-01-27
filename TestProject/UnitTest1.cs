@@ -34,9 +34,13 @@ public class UnitTest1
 	[Fact]
 	public void ServerStartTest()
 	{
-		XmlDataFactory dataFactory = new();
-		IClientHandler clientHandler = new TcpClientsHandler();
-		XmlParserServer server = new(clientHandler, dataFactory.CreateDataProcessor(), dataFactory.CreateParser());
+		XmlParserServer server = XmlParserServerBuilder.CreateBuilder()
+			.SetConnectionData("107.0.0.1", 8888)
+			.SetClientHandler()
+			.SetDataProcessor(new XmlDataProcessor())
+			.SetParser(new XmlParser())
+			.Build() as XmlParserServer ?? throw new NullReferenceException("Server is null");
+			
 		
 		if (server is null) throw new ArgumentNullException(nameof(server));
 		

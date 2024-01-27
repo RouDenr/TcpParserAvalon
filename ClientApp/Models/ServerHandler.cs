@@ -24,7 +24,7 @@ public class ServerHandler : SocketHandler
 	{
 		if (ServerSocket == null)
 		{
-			Console.WriteLine("Failed to get server info");
+			Log.Error("Server socket is null");
 			return string.Empty;
 		}
 		
@@ -37,20 +37,33 @@ public class ServerHandler : SocketHandler
 		return sb.ToString();
 	}
 
-	public Task Connect()
+	private Task Connect(ConnectionData connectionData)
 	{
-		Task connect = Socket.ConnectAsync(ConnectionData.Ip, ConnectionData.Port);
+		Task connect = Socket.ConnectAsync(connectionData.Ip, connectionData.Port);
 		
 		if (!Socket.Connected)
 		{
-			Console.WriteLine("Failed to connect");
+			Log.Error($"Failed to connect to {connectionData.Ip}:{connectionData.Port}");
+			return connect;
 		}
-		Console.WriteLine($"Connected to {Socket.Client.RemoteEndPoint}");
+		Log.Info($"Connected to {connectionData.Ip}:{connectionData.Port}");
 		
 		OnServerInfoChanged(this);
-		var readHandle = ReadHandle();
+		_ = ReadHandle();
 		
 		return connect;
+	}
+	
+	public Task Connect(string confPath)
+	{
+		ConnectionData connectionData = new (confPath);
+		return Connect(connectionData);
+	}
+	
+	public Task Connect(string ip, int port)
+	{
+		ConnectionData connectionData = new (ip, port);
+		return Connect(connectionData);
 	}
 
 	protected virtual void OnServerInfoChanged(ServerHandler server)

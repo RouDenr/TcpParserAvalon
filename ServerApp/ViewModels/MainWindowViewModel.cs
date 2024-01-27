@@ -17,9 +17,12 @@ public class MainWindowViewModel : ViewModelBase
     private Bitmap? _image;
     private StringBuilder _log = new();
 
+    private XmlParser _xmlParser;
+    
     public MainWindowViewModel()
     {
         SelectFileCommand = ReactiveCommand.CreateFromTask(SelectFile);
+        _xmlParser = new XmlParser();
     }
     
     // TODO: change obsolete method
@@ -31,8 +34,7 @@ public class MainWindowViewModel : ViewModelBase
         var result = await dialog.ShowAsync(new Window());
         if (result != null)
         {
-            FileInfo file = new(result[0]);
-            DataInfo = ServerInstance.Instance.ParseFile(file);
+            DataInfo = _xmlParser.Parse(result[0]) as XmlData ?? throw new Exception("Failed to parse xml");
         }
     }
     
