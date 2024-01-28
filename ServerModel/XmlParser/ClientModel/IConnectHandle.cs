@@ -2,7 +2,7 @@
 
 namespace ServerModel.XmlParser.ClientModel;
 
-public interface IConnectManage : IDisposable
+public interface IConnectHandle : IDisposable
 {
 	event EventHandler<IData> DataReceivedEvent;
 	event EventHandler<SocketHandler>? DisconnectedEvent;

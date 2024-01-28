@@ -11,7 +11,7 @@ public class TcpClientsManage
 	public int Port { get; }
 	public IPAddress Ip { get; }
 	public IEnumerable<IDisposable> Clients { get; set; }
-	public IResponseHandler ResponseHandler { get; }
+	public IRequestHandler RequestHandler { get; }
 	public bool IsRunning => Listener.Server.IsBound;
 	
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -30,7 +30,7 @@ public class TcpClientsManage
 			Clients = new List<ClientHandler>();
 			ClientsList = Clients as List<ClientHandler> ??
 			              throw new Exception("Failed to cast Clients to List<IClient>");
-			ResponseHandler = new TcpResponseHandler();
+			RequestHandler = new TcpRequestHandler();
 		} catch (Exception e) {
 			Log.Error(e.Message);
 			throw;

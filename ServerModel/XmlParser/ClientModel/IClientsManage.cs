@@ -8,7 +8,7 @@ public interface IClientsManage
 	IPAddress Ip { get; }
 	IEnumerable<IDisposable> Clients { get; set; }
 	
-	IResponseHandler ResponseHandler { get; }
+	IRequestHandler RequestHandler { get; }
 	bool IsRunning { get;  }
 
 	Task HandleClients();
