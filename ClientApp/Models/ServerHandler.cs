@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,19 +11,31 @@ using ServerModel.XmlParser.Server;
 
 namespace ClientApp.Models;
 
-public class ServerHandler : SocketHandler
+public sealed class ServerHandler : SocketHandler
 {
 	
 	public static ServerHandler Instance => _instance ??= new ServerHandler();
-	public event EventHandler<ServerHandler>? ServerInfoChangedEvent;
+	public event EventHandler<ServerHandler>? ServerConnectedEvent;
 	
 
 	private static ServerHandler? _instance;
 	
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-	
-	private ServerHandler() : base(new TcpClient()) { }
+
+	private ServerHandler() : base(new TcpClient())
+	{
+
+	}
+
+	private void DisconnectHandler(object? sender, SocketHandler e)
+	{
+		Socket.Close();
+	}
+
 	private Socket? ServerSocket => Socket.Client;
+
+	private IPAddress? Ip { get; set; }
+	private int Port { get; set; }
 
 	public string ServerInfo()
 	{
@@ -41,29 +54,37 @@ public class ServerHandler : SocketHandler
 		return sb.ToString();
 	}
 
-	private Task Connect(ConnectionData connectionData)
+	private async Task Connect(IPAddress ip, int port)
 	{
-		Task connect = Socket.ConnectAsync(connectionData.Ip, connectionData.Port);
-		
-		Log.Info($"Connecting to {connectionData.Ip}:{connectionData.Port}");
-		if (!Socket.Connected)
-		{
-			Log.Error($"Failed to connect to {connectionData.Ip}:{connectionData.Port}");
-			return connect;
+		Ip = ip;
+		Port = port;
+		try {
+
+			Log.Info($"Connecting to {ip}:{port}");
+			await Socket.ConnectAsync(ip, port);
+
+			if (!Socket.Connected)
+			{
+				Log.Error($"Failed to connect to {ip}:{port}");
+			}
+
+			Log.Info($"Connected to {ip}:{port}");
+
+			OnServerConnectedEvent(this);
+			_ = ReadHandle();
 		}
-		Log.Info($"Connected to {connectionData.Ip}:{connectionData.Port}");
-		
-		OnServerInfoChanged(this);
-		_ = ReadHandle();
-		
-		return connect;
+		catch (Exception e)
+		{
+			Log.Error(e.Message);
+			throw;
+		}
 	}
 	
-	public Task Connect(string confPath)
+	public async Task Connect(string confPath)
 	{
 		try {
 			ConnectionData connectionData = new(confPath);
-			return Connect(connectionData);
+			await Connect(connectionData);
 		}
 		catch (FileNotFoundException e)
 		{
@@ -77,14 +98,31 @@ public class ServerHandler : SocketHandler
 		}
 	}
 	
-	public Task Connect(string ip, int port)
+	public async Task Connect(ConnectionData connectionData)
 	{
-		ConnectionData connectionData = new (ip, port);
-		return Connect(connectionData);
+		await Connect(connectionData.Ip, connectionData.Port);
+	}
+	
+	public async Task Connect()
+	{
+		if (Ip == null)
+		{
+			Log.Error("Ip is null");
+			return;
+		}
+		await Connect(Ip, Port);
 	}
 
-	protected virtual void OnServerInfoChanged(ServerHandler server)
+	public async Task Reconnect()
 	{
-		ServerInfoChangedEvent?.Invoke(this, server);
+		Socket.Close();
+		Socket = new TcpClient();
+
+		await Connect();
+	}
+	
+	private void OnServerConnectedEvent(ServerHandler e)
+	{
+		ServerConnectedEvent?.Invoke(this, e);
 	}
 }

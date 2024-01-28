@@ -11,7 +11,7 @@ public class SocketHandler : IConnectHandle
 	public event EventHandler<IData>? DataReceivedEvent;
 	public event EventHandler<SocketHandler>? DisconnectedEvent;
 	
-	protected TcpClient Socket { get; }
+	protected TcpClient Socket { get; set; }
 	
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 	
@@ -36,9 +36,10 @@ public class SocketHandler : IConnectHandle
 					OnClientSentDataInvoke(dataReceived);
 				}
 			}
-			finally
+			catch (Exception e)
 			{
-				Dispose();
+				Log.Error(e.Message);
+				throw;
 			}
 		}
 		
@@ -57,8 +58,15 @@ public class SocketHandler : IConnectHandle
 		catch (IOException)
 		{
 			// Client disconnected
+			Log.Info($"{this} disconnected");
+			Dispose();
 			OnClientDisconnectedInvoke();
 			return null;
+		}
+		catch (Exception e)
+		{
+			Log.Error(e.Message);
+			throw;
 		}
 	}
 	
@@ -66,8 +74,14 @@ public class SocketHandler : IConnectHandle
 	{
 		try
 		{
+			if (!Socket.Connected)
+				throw new Exception("Socket is not connected");
 			byte[] buffer = data.Serialize();
-			await Socket.GetStream().WriteAsync(buffer.AsMemory(0, buffer.Length));
+			var stream = Socket.GetStream();
+			if (stream == null)
+				throw new Exception("Stream is null");
+			
+			await stream.WriteAsync(buffer.AsMemory(0, buffer.Length));
 		}
 		catch (Exception e)
 		{
