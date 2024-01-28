@@ -1,7 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-
-namespace ServerModel.XmlParser.Data;
+﻿namespace ServerModel.XmlParser.Data;
 
 [Serializable]
 public class XmlData(string path, string? from, string? to, string? text, int color, byte[] image) 
@@ -19,5 +16,37 @@ public class XmlData(string path, string? from, string? to, string? text, int co
 	public override IData Clone()
 	{
 		return new XmlData(Path, From, To, Text, Color, Image);
+	}
+
+	public override bool Equals(object? obj)
+	{
+		if (obj == null || GetType() != obj.GetType())
+		{
+			return false;
+		}
+
+		var other = (XmlData)obj;
+		return Color == other.Color &&
+		       From == other.From &&
+		       Id == other.Id &&
+		       Image.SequenceEqual(other.Image) &&
+		       Name == other.Name &&
+		       Path == other.Path 
+			;
+	}
+
+	protected bool Equals(XmlData other)
+	{
+		return From == other.From &&
+		       To == other.To &&
+		       Text == other.Text &&
+		       Color == other.Color &&
+		       Image.Equals(other.Image) &&
+		       Id == other.Id;
+	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(From, To, Text, Color, Image, Id);
 	}
 }

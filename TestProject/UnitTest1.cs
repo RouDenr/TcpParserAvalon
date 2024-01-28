@@ -1,3 +1,4 @@
+using System.Drawing;
 using Moq;
 using ServerModel.ConsoleImplement;
 using ServerModel.XmlParser;
@@ -114,5 +115,39 @@ public class UnitTest1
 			.SetDataProcessor(new XmlDataProcessor())
 			.SetParser(new XmlParser());
 		Assert.NotNull(builder.Build());
+	}
+
+
+	[Fact]
+	public void XmlSerializeTest()
+	{
+		XmlData xmlData = new(
+			path: "path",
+			from: "from",
+			to: "to",
+			text: "text",
+			color: Color.Green.ToArgb(),
+			image: new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }
+		);
+		var xml = xmlData.Serialize();
+		var deserialized = AData.Deserialize(xml);
+
+		Assert.NotNull(deserialized);
+		Assert.True(deserialized is XmlData);
+		Assert.Equal(xmlData, deserialized);
+	}
+	
+	[Fact]
+	public void XmlFileSerializeTest()
+	{
+		var parser = new XmlParser();
+		
+		XmlData xmlData = parser.Parse("../../../TestResources/test1.xml") as XmlData ?? throw new Exception("Failed to parse");
+		var xml = xmlData.Serialize();
+		var deserialized = AData.Deserialize(xml);
+
+		Assert.NotNull(deserialized);
+		Assert.True(deserialized is XmlData);
+		Assert.Equal(xmlData, deserialized);
 	}
 }

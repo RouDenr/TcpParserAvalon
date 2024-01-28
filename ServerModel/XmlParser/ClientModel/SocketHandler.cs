@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Runtime.Serialization;
 using NLog;
 using ServerModel.XmlParser.Data;
 
@@ -9,6 +10,7 @@ public class SocketHandler : IConnectHandle
 	public bool IsConnected => Socket.Connected;
 	
 	public event EventHandler<IData>? DataReceivedEvent;
+	public event EventHandler<IData>? DataSentInvoke;
 	public event EventHandler<SocketHandler>? DisconnectedEvent;
 	
 	protected TcpClient Socket { get; set; }
@@ -45,8 +47,7 @@ public class SocketHandler : IConnectHandle
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message);
-				throw;
+				Log.Error(e);
 			}
 		}
 		
@@ -56,11 +57,10 @@ public class SocketHandler : IConnectHandle
 	{
 		try
 		{
-			var buffer = new byte[Socket.ReceiveBufferSize];
 			Log.Info($"Waiting for data from {Socket.Client.RemoteEndPoint}");
-			var bytesRead = await Socket.GetStream()
-				.ReadAsync(buffer.AsMemory(0, Socket.ReceiveBufferSize));
-			return bytesRead == 0 ? null : AData.Deserialize(buffer);
+			var data = await ReadAllBytes();
+			Log.Info($"Received data from {Socket.Client.RemoteEndPoint} size: {data?.Serialize().Length}");
+			return data;
 		}
 		catch (IOException)
 		{
@@ -68,11 +68,48 @@ public class SocketHandler : IConnectHandle
 		}
 		catch (Exception e)
 		{
-			Log.Error(e.Message);
+			Log.Error(e);
 			throw;
 		}
 	}
-	
+
+	private async Task<IData?> ReadAllBytes()
+	{
+		MemoryStream memoryStream = new ();
+		NetworkStream stream = Socket.GetStream();
+		byte[] buffer = new byte[Socket.ReceiveBufferSize];
+		IData? data = null;
+		
+		// TODO: Можно просто сначала отправить размер, а потом уже данные!!! Я ДОЛБАЕБ
+		while (data == null)
+		{
+			var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+			memoryStream.Write(buffer, 0, bytesRead);
+			data = TryDeserializeData(memoryStream.ToArray());
+		}
+
+
+		return data;
+	}
+
+	private IData? TryDeserializeData(byte[] buffer)
+	{
+		try
+		{
+			return AData.Deserialize(buffer);
+		}
+		catch (SerializationException e)
+		{
+			Log.Info(e.Message);
+			return null;
+		}
+		catch (Exception e)
+		{
+			Log.Error(e);
+			throw;
+		}
+	}
+
 	public async Task SendDataAsync(IData data)
 	{
 		try
@@ -84,7 +121,9 @@ public class SocketHandler : IConnectHandle
 			if (stream == null)
 				throw new Exception("Stream is null");
 			
+			Log.Info($"Sending data to {Socket.Client.RemoteEndPoint} size: {buffer.Length}");
 			await stream.WriteAsync(buffer.AsMemory(0, buffer.Length));
+			OnDataSentInvoke(data);
 		}
 		catch (Exception e)
 		{
@@ -92,6 +131,7 @@ public class SocketHandler : IConnectHandle
 			throw;
 		}
 	}
+
 
 
 	public void Dispose()
@@ -116,5 +156,9 @@ public class SocketHandler : IConnectHandle
 	private void OnClientDisconnectedInvoke()
 	{
 		DisconnectedEvent?.Invoke(this, this);
+	}
+	private void OnDataSentInvoke(IData data)
+	{
+		DataSentInvoke?.Invoke(this, data);
 	}
 }

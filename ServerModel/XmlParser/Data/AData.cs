@@ -28,7 +28,7 @@ public abstract class AData : IData
 		if (dataObject == null)
 			throw new Exception("Failed to deserialize data");
 		if (dataObject is not IData deserializeData)
-			throw new Exception($"Failed to cast data to {nameof(XmlData)} type: {dataObject.GetType()}");
+			throw new Exception($"Failed to cast data to {nameof(AData)} type: {dataObject.GetType()}");
 		
 		return deserializeData;
 	}
