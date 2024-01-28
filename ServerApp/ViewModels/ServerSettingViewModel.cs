@@ -39,8 +39,6 @@ public class ServerSettingViewModel : ViewModelBase
 	private IImmutableSolidColorBrush _connectButtonColor = Brushes.Green;
 	private bool _isRunning;
 	
-	private readonly ServerManage _serverManage = new();
-	
 	public ServerSettingViewModel()
 	{
 		InitServerData();
@@ -50,9 +48,9 @@ public class ServerSettingViewModel : ViewModelBase
 
 	private void SwitchConnection()
 	{
-		if (_serverManage.IsRunning)
+		if (ServerManage.Instance.IsRunning)
 		{
-			_serverManage.StopServer();
+			ServerManage.Instance.StopServer();
 			IsRunning = false;
 		}
 		else
@@ -60,7 +58,7 @@ public class ServerSettingViewModel : ViewModelBase
 			try
 			{
 				IsRunning = true;
-				_serverManage.StartServer(ServerIp, int.Parse(ServerPort));
+				ServerManage.Instance.StartServer(ServerIp, int.Parse(ServerPort));
 			}
 			catch (Exception e)
 			{
