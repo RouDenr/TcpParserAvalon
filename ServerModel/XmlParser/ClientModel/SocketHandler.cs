@@ -36,6 +36,13 @@ public class SocketHandler : IConnectHandle
 					OnClientSentDataInvoke(dataReceived);
 				}
 			}
+			catch (IOException)
+			{
+				// Client disconnected
+				Log.Info($"{this} disconnected");
+				Dispose();
+				OnClientDisconnectedInvoke();
+			}
 			catch (Exception e)
 			{
 				Log.Error(e.Message);
@@ -57,11 +64,7 @@ public class SocketHandler : IConnectHandle
 		}
 		catch (IOException)
 		{
-			// Client disconnected
-			Log.Info($"{this} disconnected");
-			Dispose();
-			OnClientDisconnectedInvoke();
-			return null;
+			throw;
 		}
 		catch (Exception e)
 		{
