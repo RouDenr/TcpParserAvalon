@@ -4,7 +4,7 @@ using ServerModel.XmlParser.Data;
 
 namespace ServerModel.XmlParser.ClientModel;
 
-class ClientHandler : SocketHandler
+public class ClientHandler : SocketHandler
 {
 	public string Name { get; set; } = "";
 	
@@ -13,20 +13,10 @@ class ClientHandler : SocketHandler
 	public ClientHandler(TcpClient socket) : base(socket)
 	{
 		
-		DataReceivedEvent += (_, args) => NamеMessageHandler(args);
+		DataReceivedEvent += (_, args) => {Log.Info($"{this} received data: {args.GetType()}");};
 		DisconnectedEvent += (_, _) => { Log.Info($"{this} disconnected"); };
 	}
 	
-	private void NamеMessageHandler(IData data)
-	{
-		if (Name != string.Empty || data is not SimpleTextData nameMessage)
-			return;
-		// message should be in format: "name: <name>"
-		const string format = "name: ";
-		if (!nameMessage.Text.StartsWith(format))
-			return;
-		Name = nameMessage.Text[format.Length..];
-	}
 
 	public override string ToString()
 	{

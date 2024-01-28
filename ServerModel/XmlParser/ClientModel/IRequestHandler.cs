@@ -1,6 +1,8 @@
-﻿namespace ServerModel.XmlParser.ClientModel;
+﻿using ServerModel.XmlParser.Data;
+
+namespace ServerModel.XmlParser.ClientModel;
 
 public interface IRequestHandler
 {
-	void HandleResponse(string dataReceived);
+	void HandleResponse(object? sender, IData dataReceived);
 }

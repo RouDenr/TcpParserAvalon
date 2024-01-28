@@ -56,6 +56,7 @@ public class TcpClientsManage
 				ClientsList.Add(socketHandler);
 				Log.Info($"Client connected: {client.Client.RemoteEndPoint}");
 				socketHandler.DisconnectedEvent += DisconnectClient;
+				socketHandler.DataReceivedEvent += RequestHandler.HandleResponse;
 				_ = socketHandler.ReadHandle();
 			}
 		}
