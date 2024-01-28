@@ -38,6 +38,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\ServerApp\ServerApp.csproj" />
     <ProjectReference Include="..\ServerModel\ServerModel.csproj" />
   </ItemGroup>
 </Project>

@@ -13,9 +13,90 @@
         MinHeight="450"
         >
     
-    <Grid>
-        <TextBlock
-            Text="{Binding ServerInfo}"
-            />
-    </Grid>
+    <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+
+                <!-- image () -->
+                <Image Grid.Column="0" Grid.Row="0"
+                       Source="{Binding Image}" 
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                />
+                
+                <!-- DataInfo (from, to, id, text) -->
+                <!-- Text color choose from DataInfo.TextColor -->
+                <StackPanel Grid.Column="0" Grid.Row="0" 
+                            Orientation="Vertical" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top">
+                    
+                    <StackPanel.Styles>
+                        <Style Selector="Border">
+                            <Setter Property="BorderBrush" Value="Black"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="MinWidth" Value="10"/>
+                            <!-- Add more common properties as needed -->
+                        </Style>
+        
+                        <Style Selector="TextBlock">
+                            <Setter Property="Margin" Value="5"/>
+                            <Setter Property="MaxWidth" Value="200"/>
+                        </Style>
+                        <Style Selector="TextBlock.h1">
+                            <Setter Property="Foreground" Value="DarkGray"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+                    </StackPanel.Styles>
+                    
+                    <Border>
+                        <StackPanel>
+                            <TextBlock Text="ID"
+                                       Classes="h1"/>
+                            <TextBlock Text="{Binding DataInfo.Id}" />
+                        </StackPanel>
+                    </Border>
+                    <Border>
+                        <StackPanel>
+                            <TextBlock Text="От"
+                                       Classes="h1"/>
+                            <TextBlock Text="{Binding DataInfo.From}" />
+                        </StackPanel>
+                    </Border>
+                    <Border>
+                        <StackPanel>
+                            <TextBlock Text="До"
+                                       Classes="h1" />
+                            <TextBlock Text="{Binding DataInfo.To}" />
+                        </StackPanel>
+                    </Border>
+                    <Border>
+                        <StackPanel>
+                            <TextBlock Text="Текст"
+                                       Classes="h1" />
+                            <TextBlock Text="{Binding DataInfo.Text}" 
+                                       Foreground="{Binding DataInfo.Color}" />
+                        </StackPanel>
+                    </Border>
+                    <Border>
+                        <StackPanel>
+                            <TextBlock Text="Имя файла"
+                                       Classes="h1" />
+                            <!-- Assuming there's a property for the filename -->
+                            <TextBlock Text="{Binding DataInfo.Name}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                
+                <Button Grid.Column="1" Grid.Row="0" 
+                        Content="Resend" 
+                        IsEnabled="{Binding IsResendEnabled}"
+                        Command="{Binding ResendCommand}" />
+                
+                <!-- log -->
+                <TextBox 
+                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
+                    Text="{Binding Log}" 
+                    IsReadOnly="True" 
+                    />
+            </Grid>
 </UserControl>

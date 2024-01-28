@@ -45,6 +45,7 @@ public class ServerHandler : SocketHandler
 	{
 		Task connect = Socket.ConnectAsync(connectionData.Ip, connectionData.Port);
 		
+		Log.Info($"Connecting to {connectionData.Ip}:{connectionData.Port}");
 		if (!Socket.Connected)
 		{
 			Log.Error($"Failed to connect to {connectionData.Ip}:{connectionData.Port}");
@@ -60,8 +61,20 @@ public class ServerHandler : SocketHandler
 	
 	public Task Connect(string confPath)
 	{
-		ConnectionData connectionData = new (confPath);
-		return Connect(connectionData);
+		try {
+			ConnectionData connectionData = new(confPath);
+			return Connect(connectionData);
+		}
+		catch (FileNotFoundException e)
+		{
+			Log.Error(e.Message);
+			throw;
+		}
+		catch (Exception e)
+		{
+			Log.Error(e.Message);
+			throw;
+		}
 	}
 	
 	public Task Connect(string ip, int port)
