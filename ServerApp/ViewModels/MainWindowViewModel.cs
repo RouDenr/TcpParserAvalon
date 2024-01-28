@@ -23,9 +23,21 @@ public class MainWindowViewModel : ViewModelBase
     {
         ServerSettingsViewModel = new ServerSettingViewModel();
         SelectFileCommand = ReactiveCommand.CreateFromTask(SelectFile);
+        SendDataAllCommand = ReactiveCommand.CreateFromTask(SendDataAll);
         _xmlParser = new XmlParser();
     }
-    
+
+    private async Task SendDataAll()
+    {
+        if (DataInfo == null)
+        {
+            Log.AppendLine("No data to send");
+            return;
+        }
+        XmlData data = DataInfo.Clone() as XmlData ?? throw new Exception("Failed to clone data");
+        await ServerManage.Instance.SendDataToAll(data);
+    }
+
     // TODO: change obsolete method
     [Obsolete("Obsolete")]
     private async Task SelectFile()
@@ -57,6 +69,7 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _image, value);
     }
     public ICommand SelectFileCommand { get; }
+    public ICommand SendDataAllCommand { get; }
     public StringBuilder Log { get => _log; set => this.RaiseAndSetIfChanged(ref _log, value); }
     public ViewModelBase ServerSettingsViewModel { get; }
 #pragma warning restore CA1822 // Mark members as static

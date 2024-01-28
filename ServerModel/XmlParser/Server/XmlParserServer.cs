@@ -13,4 +13,15 @@ public class XmlParserServer(IClientsManage clientsManage, IDataProcessor dataPr
 	{
 		return Parser.Parse(file.FullName);
 	}
+
+	public async Task SendDataToAll(XmlData data)
+	{
+		foreach (IDisposable disposable in Clients)
+		{
+			if (disposable is ClientHandler client)
+			{
+				await client.SendDataAsync(data);
+			}
+		}
+	}
 }
