@@ -35,7 +35,7 @@ public class TcpRequestHandler : IRequestHandler
 	
 	
 	private const string HelpRuleFormat = "help";
-	private const string NameRuleFormat = "name: ";
+	private const string NameRuleFormat = "name:";
 	private const string ResendRuleFormat = "resend";
 	private void TextHandler(ClientHandler client, SimpleTextData dataReceived)
 	{
